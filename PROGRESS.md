@@ -2,42 +2,44 @@
 
 ## Week 1: Foundation
 
-### Task 1: Initialize project ← IN PROGRESS
+### Task 1: Initialize project ✅ COMPLETE
 - [x] Next.js 14 App Router + TypeScript + Tailwind CSS
 - [x] Drizzle ORM setup with schema (all 6 tables)
 - [x] Project folder structure matching page architecture
 - [x] vercel.json with framework preset and cron config
 - [x] Package dependencies installed (drizzle, next-auth, stripe, resend, neon)
-- [ ] GitHub repo created, initial commit pushed
-- [ ] Vercel project created with Postgres database
-- [ ] Environment variables configured
+- [x] GitHub repo created (bungalowlabs/slotbuddy), initial commit pushed
+- [x] Vercel project created with Neon Postgres database
+- [x] Environment variables pulled to .env.local
 
-### Task 2: Auth.js setup
-- [ ] Google provider configured
-- [ ] Session handling (JWT strategy)
-- [ ] Protected route middleware for /dashboard/*
-- [ ] User creation in database on first login
-- [ ] Login/signup pages
+### Task 2: Auth.js setup ✅ COMPLETE
+- [x] Google provider configured
+- [x] Session handling (JWT strategy)
+- [x] Protected route middleware for /dashboard/* and /onboarding
+- [x] User creation in database on first login (14-day trial)
+- [x] Login/signup pages
 
-### Task 3: Database migrations
-- [ ] Drizzle migration config using DATABASE_URL_UNPOOLED
-- [ ] Run migrations to create all six tables
+### Task 3: Database migrations ✅ COMPLETE
+- [x] Drizzle migration config using DATABASE_URL_UNPOOLED
+- [x] Ran migrations — all 6 tables created (users, businesses, services, availability, bookings, blocked_times)
 
-### Task 4: Onboarding flow
-- [ ] /onboarding page (business name, slug, timezone)
-- [ ] Auto-generate slug from business name
-- [ ] Redirect after first login
+### Task 4: Onboarding flow ✅ COMPLETE
+- [x] /onboarding page (business name, slug, timezone)
+- [x] Auto-generate slug from business name
+- [x] /api/onboarding route with slug uniqueness check
+- [x] Dashboard layout redirects to onboarding if no business exists
 
-### Task 5: Landing page
-- [ ] Hero section with tagline
-- [ ] Features grid
-- [ ] Pricing card ($15/month)
-- [ ] Signup CTA
-- [ ] Mobile responsive
+### Task 5: Landing page ✅ COMPLETE
+- [x] Hero section with "Your booking page, live in 5 minutes" tagline
+- [x] Features grid (3 steps: add services, set availability, share link)
+- [x] "Built for small service businesses" section
+- [x] Pricing card ($15/month, 14-day trial)
+- [x] Signup CTA
+- [x] Mobile responsive, matches Starply visual style
 
 ## Week 2: Business Owner Dashboard
 
-### Task 6: Services CRUD
+### Task 6: Services CRUD ← NEXT
 - [ ] /dashboard/services page
 - [ ] Add/edit/delete services
 - [ ] Name, description, duration, price, active toggle

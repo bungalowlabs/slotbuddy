@@ -15,7 +15,18 @@
       "Bash(npm install:*)",
       "Bash(npx next:*)",
       "Bash(node:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(vercel link:*)",
+      "Bash(vercel git:*)",
+      "Bash(vercel stores:*)",
+      "Bash(vercel postgres:*)",
+      "Bash(vercel storage:*)",
+      "Bash(vercel integration:*)",
+      "Bash(npx dotenv:*)",
+      "Bash(npx dotenv-cli:*)"
     ]
   }
 }
