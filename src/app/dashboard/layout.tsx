@@ -5,6 +5,7 @@ import { businesses, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { signOut } from "@/lib/auth";
+import { CopyLinkButton } from "@/components/copy-link-button";
 
 export default async function DashboardLayout({
   children,
@@ -60,6 +61,13 @@ export default async function DashboardLayout({
             <NavLink href="/dashboard/blocked" label="Blocked Times" />
             <NavLink href="/dashboard/settings" label="Settings" />
           </nav>
+          <div className="border-t border-gray-200 p-3">
+            <div className="rounded-lg bg-blue-50 p-3">
+              <p className="text-xs font-medium text-blue-700 mb-1">Your booking link</p>
+              <p className="text-xs text-blue-600 break-all">/book/{business.slug}</p>
+              <CopyLinkButton slug={business.slug} />
+            </div>
+          </div>
           <div className="border-t border-gray-200 p-4">
             <form
               action={async () => {

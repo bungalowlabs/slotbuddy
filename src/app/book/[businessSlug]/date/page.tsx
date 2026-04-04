@@ -33,6 +33,11 @@ export default function DatePickerPage() {
       .then((res) => res.json())
       .then((data) => {
         setSlots(data.slots || []);
+      })
+      .catch(() => {
+        setSlots([]);
+      })
+      .finally(() => {
         setLoadingSlots(false);
       });
   }, [selectedDate, serviceId, businessSlug]);
