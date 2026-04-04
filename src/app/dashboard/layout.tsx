@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
-import { businesses } from "@/db/schema";
+import { businesses, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { signOut } from "@/lib/auth";
@@ -25,6 +25,21 @@ export default async function DashboardLayout({
   }
 
   const business = userBusinesses[0];
+
+  // Check subscription status
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1);
+
+  if (user) {
+    const isTrialValid = user.subscriptionStatus === "trialing" && user.trialEndsAt && new Date(user.trialEndsAt) > new Date();
+    const isActive = user.subscriptionStatus === "active";
+    if (!isTrialValid && !isActive) {
+      redirect("/upgrade");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

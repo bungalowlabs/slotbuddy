@@ -4,8 +4,14 @@ import { eq, and, lt, gt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { sendBookingConfirmation, sendNewBookingNotification } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+  if (!rateLimit(ip)) {
+    return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+  }
+
   const { businessSlug, serviceId, startTime, endTime, customerName, customerEmail, customerPhone, notes } =
     await req.json();
 
