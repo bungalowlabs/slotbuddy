@@ -43,6 +43,22 @@ export async function GET() {
     const sql = neon(process.env.DATABASE_URL!);
     const rawServices = await sql`SELECT id, name, is_active, pg_typeof(is_active) as type FROM services WHERE business_id = ${business.id}`;
 
+    // Check generated SQL
+    const { drizzle: drizzle2 } = await import("drizzle-orm/neon-http");
+    const loggedQueries: string[] = [];
+    const logDb = drizzle2(sql, {
+      logger: {
+        logQuery(query: string, params: unknown[]) {
+          loggedQueries.push(`${query} -- params: ${JSON.stringify(params)}`);
+        },
+      },
+    });
+    const testResult = await logDb
+      .select()
+      .from(services)
+      .where(and(eq(services.businessId, business.id), eq(services.isActive, true)))
+      .orderBy(asc(services.sortOrder), asc(services.createdAt));
+
     return NextResponse.json({
       business: { id: business.id, slug: business.slug, name: business.name },
       owner,
@@ -51,6 +67,9 @@ export async function GET() {
       allServicesCount: allServices.length,
       allServices: allServices.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
       rawServices,
+      loggedQueries,
+      testResultCount: testResult.length,
+      testResult: testResult.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
       dbUrlExists: !!process.env.DATABASE_URL,
       now: new Date().toISOString(),
     });
