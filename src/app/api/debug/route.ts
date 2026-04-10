@@ -38,6 +38,11 @@ export async function GET() {
       .from(services)
       .where(eq(services.businessId, business.id));
 
+    // Raw SQL check
+    const { neon } = await import("@neondatabase/serverless");
+    const sql = neon(process.env.DATABASE_URL!);
+    const rawServices = await sql`SELECT id, name, is_active, pg_typeof(is_active) as type FROM services WHERE business_id = ${business.id}`;
+
     return NextResponse.json({
       business: { id: business.id, slug: business.slug, name: business.name },
       owner,
@@ -45,6 +50,7 @@ export async function GET() {
       activeServices: activeServices.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
       allServicesCount: allServices.length,
       allServices: allServices.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
+      rawServices,
       dbUrlExists: !!process.env.DATABASE_URL,
       now: new Date().toISOString(),
     });
