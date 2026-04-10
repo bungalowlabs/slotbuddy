@@ -63,6 +63,19 @@ export async function GET() {
     const rawParam = await sql`SELECT id, name, is_active FROM services WHERE business_id = ${business.id} AND is_active = ${true}`;
     const rawLiteral = await sql`SELECT id, name, is_active FROM services WHERE business_id = ${business.id} AND is_active = true`;
 
+    // Test Drizzle with only isActive filter (no businessId)
+    const onlyIsActive = await logDb
+      .select({ id: services.id, name: services.name })
+      .from(services)
+      .where(eq(services.isActive, true));
+
+    // Test with IS TRUE instead of = true using sql operator
+    const { sql: sqlOp } = await import("drizzle-orm");
+    const withIsTrueOp = await logDb
+      .select({ id: services.id, name: services.name })
+      .from(services)
+      .where(sqlOp`${services.isActive} IS TRUE AND ${services.businessId} = ${business.id}`);
+
     return NextResponse.json({
       business: { id: business.id, slug: business.slug, name: business.name },
       owner,
@@ -76,6 +89,9 @@ export async function GET() {
       testResult: testResult.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
       rawParamCount: rawParam.length,
       rawLiteralCount: rawLiteral.length,
+      onlyIsActiveCount: onlyIsActive.length,
+      withIsTrueOpCount: withIsTrueOp.length,
+      allLoggedQueries: loggedQueries,
       dbUrlExists: !!process.env.DATABASE_URL,
       now: new Date().toISOString(),
     });
