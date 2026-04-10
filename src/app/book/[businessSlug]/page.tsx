@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { isBusinessBookable } from "@/lib/business-access";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookingPage({
   params,
 }: {
