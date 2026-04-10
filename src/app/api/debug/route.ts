@@ -59,6 +59,10 @@ export async function GET() {
       .where(and(eq(services.businessId, business.id), eq(services.isActive, true)))
       .orderBy(asc(services.sortOrder), asc(services.createdAt));
 
+    // Test raw parameterized query
+    const rawParam = await sql`SELECT id, name, is_active FROM services WHERE business_id = ${business.id} AND is_active = ${true}`;
+    const rawLiteral = await sql`SELECT id, name, is_active FROM services WHERE business_id = ${business.id} AND is_active = true`;
+
     return NextResponse.json({
       business: { id: business.id, slug: business.slug, name: business.name },
       owner,
@@ -70,6 +74,8 @@ export async function GET() {
       loggedQueries,
       testResultCount: testResult.length,
       testResult: testResult.map((s) => ({ id: s.id, name: s.name, isActive: s.isActive })),
+      rawParamCount: rawParam.length,
+      rawLiteralCount: rawLiteral.length,
       dbUrlExists: !!process.env.DATABASE_URL,
       now: new Date().toISOString(),
     });
