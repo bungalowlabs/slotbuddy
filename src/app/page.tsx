@@ -5,7 +5,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
-        <span className="text-xl font-bold text-gray-900">SlotBuddy</span>
+        <span className="text-xl font-bold text-gray-900">Hello! SlotBuddy</span>
         <div className="flex items-center gap-4">
           <Link
             href="/login"
@@ -15,7 +15,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors"
           >
             Start free trial
           </Link>
@@ -26,17 +26,17 @@ export default function LandingPage() {
       <section className="px-6 pt-20 pb-16 max-w-4xl mx-auto text-center">
         <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
           Your booking page,
-          <span className="text-blue-600"> live in 5 minutes</span>.
+          <span className="text-teal-600"> live in 5 minutes</span>.
         </h1>
         <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-          SlotBuddy lets your customers book appointments online — no app
+          Hello! SlotBuddy lets your customers book appointments online — no app
           downloads, no account required. Set up your services, share your link,
           and start getting bookings today.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link
             href="/signup"
-            className="rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-teal-600 px-6 py-3 text-base font-medium text-white hover:bg-teal-700 transition-colors"
           >
             Start your 14-day free trial
           </Link>
@@ -44,6 +44,7 @@ export default function LandingPage() {
         <p className="mt-4 text-sm text-gray-500">
           $15/month after trial. Cancel anytime.
         </p>
+
       </section>
 
       {/* Features */}
@@ -109,7 +110,7 @@ export default function LandingPage() {
             </ul>
             <Link
               href="/signup"
-              className="mt-8 block w-full rounded-lg bg-blue-600 px-4 py-3 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="mt-8 block w-full rounded-lg bg-teal-600 px-4 py-3 text-center text-sm font-medium text-white hover:bg-teal-700 transition-colors"
             >
               Start free trial
             </Link>
@@ -120,7 +121,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-gray-200 px-6 py-8">
         <div className="max-w-6xl mx-auto text-center text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} SlotBuddy. All rights reserved.
+          &copy; {new Date().getFullYear()} Hello! SlotBuddy. All rights reserved.
         </div>
       </footer>
     </div>
@@ -138,7 +139,7 @@ function FeatureCard({
 }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100 text-sm font-bold text-teal-700">
         {step}
       </div>
       <h3 className="mt-4 text-lg font-semibold text-gray-900">{title}</h3>
@@ -173,7 +174,7 @@ function BusinessType({ icon, label }: { icon: string; label: string }) {
 
   return (
     <div className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-white p-6 text-center">
-      <div className="text-blue-600">{icons[icon]}</div>
+      <div className="text-teal-600">{icons[icon]}</div>
       <span className="text-sm font-medium text-gray-900">{label}</span>
     </div>
   );
@@ -183,7 +184,7 @@ function PricingItem({ text }: { text: string }) {
   return (
     <li className="flex items-center gap-3">
       <svg
-        className="h-5 w-5 flex-shrink-0 text-blue-600"
+        className="h-5 w-5 flex-shrink-0 text-teal-600"
         fill="none"
         viewBox="0 0 24 24"
         strokeWidth={2}

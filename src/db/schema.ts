@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, boolean, timestamp, time } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, boolean, timestamp, time, jsonb } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -29,6 +29,9 @@ export const services = pgTable('services', {
   description: text('description'),
   durationMinutes: integer('duration_minutes').notNull(),
   price: integer('price'),
+  bufferBeforeMinutes: integer('buffer_before_minutes').default(0).notNull(),
+  bufferAfterMinutes: integer('buffer_after_minutes').default(0).notNull(),
+  requiresApproval: boolean('requires_approval').default(false).notNull(),
   isActive: boolean('is_active').default(true),
   sortOrder: integer('sort_order').default(0),
   createdAt: timestamp('created_at').defaultNow(),
@@ -55,6 +58,17 @@ export const bookings = pgTable('bookings', {
   status: text('status').default('confirmed'),
   cancellationToken: text('cancellation_token').notNull(),
   notes: text('notes'),
+  fieldValues: jsonb('field_values'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const serviceFields = pgTable('service_fields', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  serviceId: uuid('service_id').references(() => services.id, { onDelete: 'cascade' }).notNull(),
+  label: text('label').notNull(),
+  fieldType: text('field_type').notNull().default('text'), // text | textarea | tel | email
+  required: boolean('required').default(false).notNull(),
+  sortOrder: integer('sort_order').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });
 

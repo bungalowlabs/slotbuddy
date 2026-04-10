@@ -83,7 +83,7 @@ export default function BlockedTimesPage() {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors"
         >
           Block time
         </button>
@@ -107,7 +107,7 @@ export default function BlockedTimesPage() {
                   if (!endDate) setEndDate(e.target.value);
                 }}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
               />
             </div>
             <div>
@@ -117,7 +117,7 @@ export default function BlockedTimesPage() {
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ export default function BlockedTimesPage() {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
               />
             </div>
             <div>
@@ -137,7 +137,7 @@ export default function BlockedTimesPage() {
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
               />
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function BlockedTimesPage() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g., Vacation, Holiday"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
             />
           </div>
 
@@ -159,7 +159,7 @@ export default function BlockedTimesPage() {
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
             >
               {saving ? "Saving..." : "Add blocked time"}
             </button>

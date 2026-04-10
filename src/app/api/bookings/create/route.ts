@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { sendBookingConfirmation, sendNewBookingNotification } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
+import { isBusinessBookable } from "@/lib/business-access";
 
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
@@ -12,8 +13,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
   }
 
-  const { businessSlug, serviceId, startTime, endTime, customerName, customerEmail, customerPhone, notes } =
-    await req.json();
+  const {
+    businessSlug,
+    serviceId,
+    startTime,
+    endTime,
+    customerName,
+    customerEmail,
+    customerPhone,
+    notes,
+    fieldValues,
+  } = await req.json();
 
   if (!businessSlug || !serviceId || !startTime || !endTime || !customerName?.trim() || !customerEmail?.trim()) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -30,6 +40,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Business not found" }, { status: 404 });
   }
 
+  // Block bookings if owner's trial expired and they have no active subscription
+  if (!(await isBusinessBookable(business.userId))) {
+    return NextResponse.json(
+      { error: "This business is not currently accepting online bookings." },
+      { status: 403 }
+    );
+  }
+
   // Validate service
   const [service] = await db
     .select()
@@ -41,24 +59,42 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
   }
 
-  const slotStart = new Date(startTime);
-  const slotEnd = new Date(endTime);
+  const rawStart = new Date(startTime);
+  const rawEnd = new Date(endTime);
+  const bufferBeforeMs = (service.bufferBeforeMinutes ?? 0) * 60000;
+  const bufferAfterMs = (service.bufferAfterMinutes ?? 0) * 60000;
+  const slotStart = new Date(rawStart.getTime() - bufferBeforeMs);
+  const slotEnd = new Date(rawEnd.getTime() + bufferAfterMs);
 
-  // Check for conflicts (double-booking prevention)
-  const conflicts = await db
-    .select()
+  // Check for conflicts — confirmed + pending, with each existing booking's own buffers
+  const conflictWindowStart = new Date(slotStart.getTime() - 6 * 60 * 60 * 1000);
+  const conflictWindowEnd = new Date(slotEnd.getTime() + 6 * 60 * 60 * 1000);
+  const nearby = await db
+    .select({
+      startTime: bookings.startTime,
+      endTime: bookings.endTime,
+      status: bookings.status,
+      bufferBefore: services.bufferBeforeMinutes,
+      bufferAfter: services.bufferAfterMinutes,
+    })
     .from(bookings)
+    .innerJoin(services, eq(bookings.serviceId, services.id))
     .where(
       and(
         eq(bookings.businessId, business.id),
-        eq(bookings.status, "confirmed"),
-        lt(bookings.startTime, slotEnd),
-        gt(bookings.endTime, slotStart)
+        lt(bookings.startTime, conflictWindowEnd),
+        gt(bookings.endTime, conflictWindowStart)
       )
-    )
-    .limit(1);
+    );
 
-  if (conflicts.length > 0) {
+  const hasConflict = nearby.some((b) => {
+    if (b.status !== "confirmed" && b.status !== "pending") return false;
+    const bStart = new Date(new Date(b.startTime).getTime() - (b.bufferBefore ?? 0) * 60000);
+    const bEnd = new Date(new Date(b.endTime).getTime() + (b.bufferAfter ?? 0) * 60000);
+    return slotStart < bEnd && slotEnd > bStart;
+  });
+
+  if (hasConflict) {
     return NextResponse.json(
       { error: "This time slot is no longer available. Please choose another time." },
       { status: 409 }
@@ -66,6 +102,7 @@ export async function POST(req: Request) {
   }
 
   const cancellationToken = crypto.randomBytes(32).toString("hex");
+  const bookingStatus = service.requiresApproval ? "pending" : "confirmed";
 
   const [booking] = await db
     .insert(bookings)
@@ -75,16 +112,17 @@ export async function POST(req: Request) {
       customerName: customerName.trim(),
       customerEmail: customerEmail.trim(),
       customerPhone: customerPhone?.trim() || null,
-      startTime: slotStart,
-      endTime: slotEnd,
-      status: "confirmed",
+      startTime: rawStart,
+      endTime: rawEnd,
+      status: bookingStatus,
       cancellationToken,
       notes: notes?.trim() || null,
+      fieldValues: fieldValues && typeof fieldValues === "object" ? fieldValues : null,
     })
     .returning();
 
   // Send emails (don't block the response)
-  const baseUrl = req.headers.get("origin") || "https://slotbuddy.com";
+  const baseUrl = req.headers.get("origin") || "https://helloslotbuddy.com";
   const dateDisplay = slotStart.toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -138,5 +176,5 @@ export async function POST(req: Request) {
   // Fire and forget — don't let email failures block the booking
   Promise.all(emailPromises).catch(console.error);
 
-  return NextResponse.json({ id: booking.id, cancellationToken });
+  return NextResponse.json({ id: booking.id, cancellationToken, status: bookingStatus });
 }

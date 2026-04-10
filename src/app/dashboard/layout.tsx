@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { signOut } from "@/lib/auth";
 import { CopyLinkButton } from "@/components/copy-link-button";
+import { TrialBanner } from "@/components/trial-banner";
 
 export default async function DashboardLayout({
   children,
@@ -34,12 +35,15 @@ export default async function DashboardLayout({
     .where(eq(users.id, session.user.id))
     .limit(1);
 
-  if (user) {
-    const isTrialValid = user.subscriptionStatus === "trialing" && user.trialEndsAt && new Date(user.trialEndsAt) > new Date();
-    const isActive = user.subscriptionStatus === "active";
-    if (!isTrialValid && !isActive) {
-      redirect("/upgrade");
-    }
+  const isTrialing =
+    !!user &&
+    user.subscriptionStatus === "trialing" &&
+    !!user.trialEndsAt &&
+    new Date(user.trialEndsAt) > new Date();
+  const isActive = user?.subscriptionStatus === "active";
+
+  if (!isTrialing && !isActive) {
+    redirect("/upgrade");
   }
 
   return (
@@ -49,12 +53,13 @@ export default async function DashboardLayout({
         <div className="flex flex-1 flex-col border-r border-gray-200 bg-white">
           <div className="px-4 py-5 border-b border-gray-200">
             <Link href="/dashboard" className="text-lg font-bold text-gray-900">
-              SlotBuddy
+              Hello! SlotBuddy
             </Link>
             <p className="mt-1 text-xs text-gray-500 truncate">{business.name}</p>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            <NavLink href="/dashboard" label="Calendar" />
+            <NavLink href="/dashboard" label="Home" />
+            <NavLink href="/dashboard/calendar" label="Calendar" />
             <NavLink href="/dashboard/bookings" label="Bookings" />
             <NavLink href="/dashboard/services" label="Services" />
             <NavLink href="/dashboard/availability" label="Availability" />
@@ -62,9 +67,9 @@ export default async function DashboardLayout({
             <NavLink href="/dashboard/settings" label="Settings" />
           </nav>
           <div className="border-t border-gray-200 p-3">
-            <div className="rounded-lg bg-blue-50 p-3">
-              <p className="text-xs font-medium text-blue-700 mb-1">Your booking link</p>
-              <p className="text-xs text-blue-600 break-all">/book/{business.slug}</p>
+            <div className="rounded-lg bg-teal-50 p-3">
+              <p className="text-xs font-medium text-teal-700 mb-1">Your booking link</p>
+              <p className="text-xs text-teal-600 break-all">/book/{business.slug}</p>
               <CopyLinkButton slug={business.slug} />
             </div>
           </div>
@@ -89,14 +94,15 @@ export default async function DashboardLayout({
       {/* Mobile top bar */}
       <div className="md:hidden border-b border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="text-lg font-bold text-gray-900">
-          SlotBuddy
+          Hello! SlotBuddy
         </Link>
         <span className="text-xs text-gray-500 truncate max-w-[140px]">{business.name}</span>
       </div>
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white flex justify-around py-2 z-50">
-        <MobileNavLink href="/dashboard" label="Calendar" />
+        <MobileNavLink href="/dashboard" label="Home" />
+        <MobileNavLink href="/dashboard/calendar" label="Calendar" />
         <MobileNavLink href="/dashboard/bookings" label="Bookings" />
         <MobileNavLink href="/dashboard/services" label="Services" />
         <MobileNavLink href="/dashboard/settings" label="Settings" />
@@ -104,6 +110,7 @@ export default async function DashboardLayout({
 
       {/* Main content */}
       <main className="md:pl-56">
+        {isTrialing && user?.trialEndsAt && <TrialBanner trialEndsAt={user.trialEndsAt} />}
         <div className="mx-auto max-w-5xl px-4 py-6 pb-20 md:pb-6">{children}</div>
       </main>
     </div>

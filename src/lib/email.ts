@@ -1,6 +1,6 @@
 import { getResend } from "./resend";
 
-const FROM_EMAIL = "SlotBuddy <noreply@slotbuddy.com>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "Hello! SlotBuddy <onboarding@resend.dev>";
 
 export async function sendBookingConfirmation({
   customerEmail,
@@ -46,7 +46,7 @@ export async function sendBookingConfirmation({
         ${businessAddress ? `<p><strong>Address:</strong> ${businessAddress}</p>` : ""}
         <p>Need to cancel? <a href="${cancelUrl}">Cancel your appointment</a></p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
-        <p style="color: #9ca3af; font-size: 12px;">Sent by SlotBuddy</p>
+        <p style="color: #9ca3af; font-size: 12px;">Sent by Hello! SlotBuddy</p>
       </div>
     `,
   });
@@ -89,7 +89,7 @@ export async function sendNewBookingNotification({
           ${customerPhone ? `<strong>Phone:</strong> ${customerPhone}<br/>` : ""}
         </div>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
-        <p style="color: #9ca3af; font-size: 12px;">Sent by SlotBuddy</p>
+        <p style="color: #9ca3af; font-size: 12px;">Sent by Hello! SlotBuddy</p>
       </div>
     `,
   });
@@ -127,7 +127,7 @@ export async function sendCancellationConfirmation({
         </div>
         <p>If this was a mistake, please rebook at your convenience.</p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
-        <p style="color: #9ca3af; font-size: 12px;">Sent by SlotBuddy</p>
+        <p style="color: #9ca3af; font-size: 12px;">Sent by Hello! SlotBuddy</p>
       </div>
     `,
   });
@@ -177,7 +177,7 @@ export async function sendBookingReminder({
         ${businessAddress ? `<p><strong>Address:</strong> ${businessAddress}</p>` : ""}
         <p>Need to cancel? <a href="${cancelUrl}">Cancel your appointment</a></p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
-        <p style="color: #9ca3af; font-size: 12px;">Sent by SlotBuddy</p>
+        <p style="color: #9ca3af; font-size: 12px;">Sent by Hello! SlotBuddy</p>
       </div>
     `,
   });

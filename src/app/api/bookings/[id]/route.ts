@@ -22,7 +22,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   const { status } = await req.json();
 
-  if (!["confirmed", "cancelled", "completed", "no_show"].includes(status)) {
+  if (!["pending", "confirmed", "cancelled", "completed", "no_show"].includes(status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
@@ -67,6 +67,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       endTime: bookings.endTime,
       status: bookings.status,
       notes: bookings.notes,
+      fieldValues: bookings.fieldValues,
       createdAt: bookings.createdAt,
       serviceName: services.name,
       serviceDuration: services.durationMinutes,

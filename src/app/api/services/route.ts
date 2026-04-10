@@ -44,7 +44,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No business found" }, { status: 404 });
   }
 
-  const { name, description, durationMinutes, price, isActive } = await req.json();
+  const {
+    name,
+    description,
+    durationMinutes,
+    price,
+    isActive,
+    bufferBeforeMinutes,
+    bufferAfterMinutes,
+    requiresApproval,
+  } = await req.json();
 
   if (!name?.trim() || !durationMinutes) {
     return NextResponse.json({ error: "Name and duration are required" }, { status: 400 });
@@ -59,6 +68,9 @@ export async function POST(req: Request) {
       durationMinutes,
       price: price ? Math.round(price * 100) : null,
       isActive: isActive ?? true,
+      bufferBeforeMinutes: bufferBeforeMinutes ?? 0,
+      bufferAfterMinutes: bufferAfterMinutes ?? 0,
+      requiresApproval: requiresApproval ?? false,
     })
     .returning();
 
@@ -76,7 +88,18 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "No business found" }, { status: 404 });
   }
 
-  const { id, name, description, durationMinutes, price, isActive, sortOrder } = await req.json();
+  const {
+    id,
+    name,
+    description,
+    durationMinutes,
+    price,
+    isActive,
+    sortOrder,
+    bufferBeforeMinutes,
+    bufferAfterMinutes,
+    requiresApproval,
+  } = await req.json();
 
   if (!id) {
     return NextResponse.json({ error: "Service ID is required" }, { status: 400 });
@@ -91,6 +114,9 @@ export async function PUT(req: Request) {
       price: price !== undefined ? (price ? Math.round(price * 100) : null) : undefined,
       isActive,
       sortOrder,
+      bufferBeforeMinutes,
+      bufferAfterMinutes,
+      requiresApproval,
     })
     .where(and(eq(services.id, id), eq(services.businessId, business.id)))
     .returning();

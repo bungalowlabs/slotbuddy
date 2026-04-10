@@ -1,0 +1,2 @@
+- [Stripe in test mode](project_stripe_test_mode.md) — all Stripe env vars in Vercel prod are test-mode during revamp; swap to live before launch
+- [Revamp status](project_revamp_status.md) — all 8 tasks shipped + AI descriptions; pending: prod DB migrations, deploy, Stripe e2e test

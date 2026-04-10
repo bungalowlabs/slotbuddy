@@ -3,8 +3,9 @@ import Link from "next/link";
 export default function SuccessPage({
   searchParams,
 }: {
-  searchParams: { date?: string; time?: string };
+  searchParams: { date?: string; time?: string; status?: string };
 }) {
+  const isPending = searchParams.status === "pending";
   const formattedDate = searchParams.date
     ? new Date(searchParams.date + "T12:00:00").toLocaleDateString("en-US", {
         weekday: "long",
@@ -29,9 +30,13 @@ export default function SuccessPage({
           </svg>
         </div>
 
-        <h1 className="mt-6 text-2xl font-bold text-gray-900">Booking confirmed!</h1>
+        <h1 className="mt-6 text-2xl font-bold text-gray-900">
+          {isPending ? "Request received!" : "Booking confirmed!"}
+        </h1>
         <p className="mt-2 text-gray-600">
-          You&apos;re all set. A confirmation email is on its way.
+          {isPending
+            ? "Your booking request is pending approval. You'll get an email once it's confirmed."
+            : "You're all set. A confirmation email is on its way."}
         </p>
 
         {(formattedDate || searchParams.time) && (
@@ -51,8 +56,8 @@ export default function SuccessPage({
 
         <footer className="mt-16 text-center text-xs text-gray-400">
           Powered by{" "}
-          <Link href="/" className="text-blue-500 hover:text-blue-600">
-            SlotBuddy
+          <Link href="/" className="text-teal-500 hover:text-teal-600">
+            Hello! SlotBuddy
           </Link>
         </footer>
       </div>

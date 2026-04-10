@@ -48,7 +48,7 @@ export async function GET(req: Request) {
       )
     );
 
-  const baseUrl = process.env.AUTH_URL || "https://slotbuddy.com";
+  const baseUrl = process.env.AUTH_URL || "https://helloslotbuddy.com";
   let sent = 0;
 
   for (const booking of upcomingBookings) {

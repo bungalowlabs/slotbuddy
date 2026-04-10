@@ -3,6 +3,7 @@ import { businesses, services } from "@/db/schema";
 import { eq, and, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { isBusinessBookable } from "@/lib/business-access";
 
 export default async function BookingPage({
   params,
@@ -17,6 +18,40 @@ export default async function BookingPage({
 
   if (!business) notFound();
 
+  const bookable = await isBusinessBookable(business.userId);
+
+  if (!bookable) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="mx-auto max-w-lg px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">{business.name}</h1>
+            <div className="mt-8 rounded-xl border border-gray-200 bg-white p-8">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Online booking is paused
+              </h2>
+              <p className="mt-3 text-sm text-gray-600">
+                This business isn&apos;t accepting new bookings online right now.
+                {business.phone ? " Please contact them directly to schedule." : ""}
+              </p>
+              {business.phone && (
+                <p className="mt-4 text-sm font-medium text-gray-900">
+                  {business.phone}
+                </p>
+              )}
+            </div>
+            <footer className="mt-12 text-center text-xs text-gray-400">
+              Powered by{" "}
+              <a href="/" className="text-teal-500 hover:text-teal-600">
+                Hello! SlotBuddy
+              </a>
+            </footer>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const activeServices = await db
     .select()
     .from(services)
@@ -25,15 +60,15 @@ export default async function BookingPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-lg px-4 py-8">
+      <div className="mx-auto max-w-lg px-4 py-6 sm:py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">{business.name}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{business.name}</h1>
           {business.description && (
-            <p className="mt-2 text-gray-600">{business.description}</p>
+            <p className="mt-2 text-base text-gray-600">{business.description}</p>
           )}
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <h2 className="text-lg font-semibold text-gray-900">Select a service</h2>
           {activeServices.length === 0 ? (
             <p className="mt-4 text-gray-500">No services available right now.</p>
@@ -43,11 +78,11 @@ export default async function BookingPage({
                 <Link
                   key={service.id}
                   href={`/book/${params.businessSlug}/date?service=${service.id}`}
-                  className="block rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-300 hover:shadow-sm transition-all"
+                  className="block rounded-xl border border-gray-200 bg-white p-5 active:scale-[0.98] hover:border-teal-300 hover:shadow-sm transition-all"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900">{service.name}</h3>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base font-semibold text-gray-900">{service.name}</h3>
                       {service.description && (
                         <p className="mt-1 text-sm text-gray-500">{service.description}</p>
                       )}
@@ -76,8 +111,8 @@ export default async function BookingPage({
 
         <footer className="mt-12 text-center text-xs text-gray-400">
           Powered by{" "}
-          <a href="/" className="text-blue-500 hover:text-blue-600">
-            SlotBuddy
+          <a href="/" className="text-teal-500 hover:text-teal-600">
+            Hello! SlotBuddy
           </a>
         </footer>
       </div>

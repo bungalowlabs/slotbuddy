@@ -102,7 +102,7 @@ export default function AvailabilityPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+          className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
         >
           {saving ? "Saving..." : saved ? "Saved!" : "Save schedule"}
         </button>
@@ -122,7 +122,7 @@ export default function AvailabilityPage() {
                   type="checkbox"
                   checked={day.isEnabled}
                   onChange={(e) => updateDay(day.dayOfWeek, { isEnabled: e.target.checked })}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
                 <span className="text-sm font-medium text-gray-900">
                   {DAY_NAMES[day.dayOfWeek]}
@@ -134,7 +134,7 @@ export default function AvailabilityPage() {
                   <select
                     value={day.startTime}
                     onChange={(e) => updateDay(day.dayOfWeek, { startTime: e.target.value })}
-                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
                   >
                     {TIME_OPTIONS.map((t) => (
                       <option key={t} value={t}>
@@ -146,7 +146,7 @@ export default function AvailabilityPage() {
                   <select
                     value={day.endTime}
                     onChange={(e) => updateDay(day.dayOfWeek, { endTime: e.target.value })}
-                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
                   >
                     {TIME_OPTIONS.map((t) => (
                       <option key={t} value={t}>

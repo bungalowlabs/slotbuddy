@@ -15,7 +15,8 @@ interface Booking {
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  confirmed: "bg-blue-100 text-blue-700",
+  pending: "bg-amber-100 text-amber-700",
+  confirmed: "bg-teal-100 text-teal-700",
   completed: "bg-green-100 text-green-700",
   cancelled: "bg-gray-100 text-gray-500",
   no_show: "bg-yellow-100 text-yellow-700",
@@ -68,9 +69,10 @@ export default function BookingsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
         >
           <option value="all">All statuses</option>
+          <option value="pending">Pending approval</option>
           <option value="confirmed">Confirmed</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
@@ -121,6 +123,22 @@ export default function BookingsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
+                      {booking.status === "pending" && (
+                        <div className="flex justify-end gap-1">
+                          <button
+                            onClick={() => updateStatus(booking.id, "confirmed")}
+                            className="rounded px-2 py-1 text-xs text-teal-600 hover:bg-teal-50"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => updateStatus(booking.id, "cancelled")}
+                            className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      )}
                       {booking.status === "confirmed" && (
                         <div className="flex justify-end gap-1">
                           <button
@@ -163,6 +181,22 @@ export default function BookingsPage() {
                   </span>
                 </div>
                 <div className="mt-2 text-sm text-gray-600">{formatDateTime(booking.startTime)}</div>
+                {booking.status === "pending" && (
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      onClick={() => updateStatus(booking.id, "confirmed")}
+                      className="rounded-lg px-3 py-1 text-xs font-medium text-teal-600 border border-teal-200 hover:bg-teal-50"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => updateStatus(booking.id, "cancelled")}
+                      className="rounded-lg px-3 py-1 text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50"
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
                 {booking.status === "confirmed" && (
                   <div className="mt-3 flex gap-2">
                     <button

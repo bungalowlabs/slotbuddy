@@ -43,9 +43,6 @@ export async function POST() {
           quantity: 1,
         },
       ],
-      subscription_data: {
-        trial_period_days: 14,
-      },
       success_url: `${process.env.AUTH_URL}/dashboard?checkout=success`,
       cancel_url: `${process.env.AUTH_URL}/dashboard?checkout=cancelled`,
     });

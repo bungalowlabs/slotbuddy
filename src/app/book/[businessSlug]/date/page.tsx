@@ -99,7 +99,7 @@ export default function DatePickerPage() {
       <div className="mx-auto max-w-lg px-4 py-8">
         <button
           onClick={() => router.back()}
-          className="text-sm text-blue-600 hover:text-blue-700 mb-4"
+          className="-ml-2 px-2 py-2 text-base text-teal-600 hover:text-teal-700 mb-2"
         >
           &larr; Back
         </button>
@@ -143,11 +143,11 @@ export default function DatePickerPage() {
                   key={day}
                   onClick={() => selectable && setSelectedDate(dateStr)}
                   disabled={!selectable}
-                  className={`aspect-square rounded-lg text-sm font-medium transition-colors ${
+                  className={`aspect-square min-h-[44px] rounded-lg text-base font-medium transition-colors ${
                     isSelected
-                      ? "bg-blue-600 text-white"
+                      ? "bg-teal-600 text-white"
                       : isToday
-                      ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      ? "bg-teal-50 text-teal-700 hover:bg-teal-100"
                       : selectable
                       ? "text-gray-900 hover:bg-gray-100"
                       : "text-gray-300 cursor-not-allowed"
@@ -178,7 +178,7 @@ export default function DatePickerPage() {
                   <button
                     key={slot.startUTC}
                     onClick={() => selectSlot(slot)}
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-900 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                    className="min-h-[48px] rounded-lg border border-gray-200 bg-white px-3 py-3 text-base font-medium text-gray-900 active:scale-95 hover:border-teal-300 hover:bg-teal-50 transition-all"
                   >
                     {slot.time}
                   </button>
@@ -190,8 +190,8 @@ export default function DatePickerPage() {
 
         <footer className="mt-12 text-center text-xs text-gray-400">
           Powered by{" "}
-          <a href="/" className="text-blue-500 hover:text-blue-600">
-            SlotBuddy
+          <a href="/" className="text-teal-500 hover:text-teal-600">
+            Hello! SlotBuddy
           </a>
         </footer>
       </div>

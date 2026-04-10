@@ -9,7 +9,7 @@ export default async function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">SlotBuddy</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Hello! SlotBuddy</h1>
           <p className="mt-2 text-gray-600">
             Your booking page, live in 5 minutes.
           </p>
@@ -52,7 +52,7 @@ export default async function SignupPage() {
 
         <p className="text-center text-sm text-gray-500">
           Already have an account?{" "}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <a href="/login" className="font-medium text-teal-600 hover:text-teal-500">
             Sign in
           </a>
         </p>

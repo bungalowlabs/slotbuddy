@@ -35,6 +35,16 @@ Database env vars (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`) are pulled from Verc
 - `STRIPE_PRICE_ID` — Stripe price ID for $15/month plan
 - `RESEND_API_KEY` — Resend email API key
 
+## Secrets Handling
+
+NEVER print, echo, paste, or otherwise reproduce the value of any environment variable in chat output, commit messages, file contents, or tool arguments that will surface in conversation. This applies to ALL env vars (secrets, OAuth IDs, URLs, price IDs — everything), regardless of whether they look "sensitive."
+
+- When auditing env vars, only report variable names and pass/fail status, never values. Diagnose problems by shape (length, prefix, presence of `\n`/whitespace) without revealing the value.
+- When reading `.env*` files or `vercel env pull` output, do not quote, summarize, or display matched lines. Use Grep with patterns that report only line numbers or counts, not content.
+- When fixing a malformed env var, pipe the value into `vercel env add` from a source that does not echo it (e.g., re-pull from Vercel into a temp file, then use that file as input). Do NOT retype the value into a `printf` literal in a tool call.
+- Always delete `.env.production.local` (and any other pulled env files) immediately after use in the same tool call that consumed them.
+- If a value has already been exposed in conversation, treat it as compromised and tell the user to rotate it.
+
 ## Build Instructions
 
 Follow the Build Sequence in SLOTBUDDY-SPEC.md strictly in order. Complete one task at a time. Do not skip ahead. After each task, wait for confirmation before proceeding to the next.

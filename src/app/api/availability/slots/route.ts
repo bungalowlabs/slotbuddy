@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { businesses, services, availability, bookings, blockedTimes } from "@/db/schema";
 import { eq, and, gte, lte } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { isBusinessBookable } from "@/lib/business-access";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,11 @@ export async function GET(req: Request) {
 
     if (!business) {
       return NextResponse.json({ error: "Business not found", slots: [] }, { status: 404 });
+    }
+
+    // If owner's trial expired with no active subscription, return no slots
+    if (!(await isBusinessBookable(business.userId))) {
+      return NextResponse.json({ slots: [] });
     }
 
     // Get service
@@ -75,17 +81,34 @@ export async function GET(req: Request) {
     const dayStart = toUTC(dateStr, startTimeStr, business.timezone);
     const dayEnd = toUTC(dateStr, endTimeStr, business.timezone);
 
-    const existingBookings = await db
-      .select()
+    // Pull a wider window so we catch buffer overlap from neighboring days
+    const windowStart = new Date(dayStart.getTime() - 6 * 60 * 60 * 1000);
+    const windowEnd = new Date(dayEnd.getTime() + 6 * 60 * 60 * 1000);
+    const existingBookingsRaw = await db
+      .select({
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        bufferBefore: services.bufferBeforeMinutes,
+        bufferAfter: services.bufferAfterMinutes,
+      })
       .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
       .where(
         and(
           eq(bookings.businessId, business.id),
-          eq(bookings.status, "confirmed"),
-          gte(bookings.startTime, dayStart),
-          lte(bookings.startTime, dayEnd)
+          gte(bookings.startTime, windowStart),
+          lte(bookings.startTime, windowEnd)
         )
       );
+
+    // Treat both confirmed and pending bookings as occupying the slot
+    const existingBookings = existingBookingsRaw
+      .filter((b) => b.status === "confirmed" || b.status === "pending")
+      .map((b) => ({
+        startTime: new Date(new Date(b.startTime).getTime() - (b.bufferBefore ?? 0) * 60000),
+        endTime: new Date(new Date(b.endTime).getTime() + (b.bufferAfter ?? 0) * 60000),
+      }));
 
     // Get blocked times that overlap
     const blocked = await db
@@ -101,17 +124,23 @@ export async function GET(req: Request) {
 
     // Filter out unavailable slots
     const now = new Date();
+    const candidateBufferBefore = (service.bufferBeforeMinutes ?? 0) * 60000;
+    const candidateBufferAfter = (service.bufferAfterMinutes ?? 0) * 60000;
+
     const availableSlots = slots.filter((slot) => {
-      const slotStart = new Date(slot.startUTC);
-      const slotEnd = new Date(slot.endUTC);
+      const rawStart = new Date(slot.startUTC);
+      const rawEnd = new Date(slot.endUTC);
+      // Expand the candidate slot by its own buffers
+      const slotStart = new Date(rawStart.getTime() - candidateBufferBefore);
+      const slotEnd = new Date(rawEnd.getTime() + candidateBufferAfter);
 
       // Past slots
-      if (slotStart <= now) return false;
+      if (rawStart <= now) return false;
 
-      // Overlapping bookings
+      // Overlapping bookings (already buffer-expanded)
       for (const booking of existingBookings) {
-        const bStart = new Date(booking.startTime);
-        const bEnd = new Date(booking.endTime);
+        const bStart = booking.startTime;
+        const bEnd = booking.endTime;
         if (slotStart < bEnd && slotEnd > bStart) return false;
       }
 

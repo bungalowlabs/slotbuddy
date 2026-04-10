@@ -92,7 +92,7 @@ export default function OnboardingPage() {
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Joe's Barbershop"
               required
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
             />
           </div>
 
@@ -100,9 +100,9 @@ export default function OnboardingPage() {
             <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
               Booking page URL
             </label>
-            <div className="mt-1 flex rounded-lg border border-gray-300 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+            <div className="mt-1 flex rounded-lg border border-gray-300 focus-within:border-teal-500 focus-within:ring-1 focus-within:ring-teal-500">
               <span className="inline-flex items-center rounded-l-lg bg-gray-50 px-3 text-sm text-gray-500 border-r border-gray-300">
-                slotbuddy.com/book/
+                helloslotbuddy.com/book/
               </span>
               <input
                 id="slug"
@@ -123,7 +123,7 @@ export default function OnboardingPage() {
               id="timezone"
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz} value={tz}>
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
           <button
             type="submit"
             disabled={loading || !businessName.trim() || !slug.trim()}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-teal-600 px-4 py-3 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Creating..." : "Create my booking page"}
           </button>

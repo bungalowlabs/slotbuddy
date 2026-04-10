@@ -9,7 +9,7 @@ export default async function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">SlotBuddy</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Hello! SlotBuddy</h1>
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
@@ -47,7 +47,7 @@ export default async function LoginPage() {
 
         <p className="text-center text-sm text-gray-500">
           Don&apos;t have an account?{" "}
-          <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+          <a href="/signup" className="font-medium text-teal-600 hover:text-teal-500">
             Sign up
           </a>
         </p>
