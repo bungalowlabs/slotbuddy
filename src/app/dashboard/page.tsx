@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { businesses, services, availability, bookings } from "@/db/schema";
-import { and, eq, gte, lt, desc } from "drizzle-orm";
+import { and, eq, gte, lt, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { CopyLinkButton } from "@/components/copy-link-button";
 
@@ -32,8 +32,8 @@ export default async function DashboardHomePage() {
 
   const [activeServices, enabledAvailability, todayBookings, weekBookings, recentBookings] =
     await Promise.all([
-      db.select().from(services).where(and(eq(services.businessId, business.id), eq(services.isActive, true))),
-      db.select().from(availability).where(and(eq(availability.businessId, business.id), eq(availability.isEnabled, true))),
+      db.select().from(services).where(and(eq(services.businessId, business.id), sql`${services.isActive} IS TRUE`)),
+      db.select().from(availability).where(and(eq(availability.businessId, business.id), sql`${availability.isEnabled} IS TRUE`)),
       db
         .select()
         .from(bookings)

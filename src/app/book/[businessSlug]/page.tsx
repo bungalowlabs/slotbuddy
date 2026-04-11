@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { businesses, services } from "@/db/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and, asc, sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { isBusinessBookable } from "@/lib/business-access";
@@ -57,7 +57,7 @@ export default async function BookingPage({
   const activeServices = await db
     .select()
     .from(services)
-    .where(and(eq(services.businessId, business.id), eq(services.isActive, true)))
+    .where(and(eq(services.businessId, business.id), sql`${services.isActive} IS TRUE`))
     .orderBy(asc(services.sortOrder), asc(services.createdAt));
 
   return (
