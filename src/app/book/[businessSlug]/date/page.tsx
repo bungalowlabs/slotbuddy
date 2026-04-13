@@ -95,36 +95,47 @@ export default function DatePickerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-lg px-4 py-8">
+    <div className="min-h-screen bg-cream text-ink">
+      <div className="mx-auto max-w-lg px-5 pb-16 pt-8">
         <button
           onClick={() => router.back()}
-          className="-ml-2 px-2 py-2 text-base text-teal-600 hover:text-teal-700 mb-2"
+          className="-ml-1 mb-6 text-sm font-medium text-ink/60 transition-colors hover:text-terracotta"
         >
-          &larr; Back
+          ← Back
         </button>
 
-        <h1 className="text-2xl font-bold text-gray-900">Pick a date & time</h1>
+        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          Step 2 — When?
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Pick a <em className="italic text-terracotta">time</em>.
+        </h1>
 
         {/* Calendar */}
-        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-4">
-          <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="p-1 hover:bg-gray-100 rounded">
-              <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
+        <div className="mt-8 rounded-3xl border border-ink/10 bg-white p-5">
+          <div className="mb-5 flex items-center justify-between">
+            <button
+              onClick={prevMonth}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition-colors hover:bg-cream hover:text-ink"
+              aria-label="Previous month"
+            >
+              ←
             </button>
-            <span className="text-sm font-semibold text-gray-900">{monthName}</span>
-            <button onClick={nextMonth} className="p-1 hover:bg-gray-100 rounded">
-              <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
+            <span className="font-display text-base font-semibold text-ink">{monthName}</span>
+            <button
+              onClick={nextMonth}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition-colors hover:bg-cream hover:text-ink"
+              aria-label="Next month"
+            >
+              →
             </button>
           </div>
 
-          <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-500 mb-2">
+          <div className="mb-2 grid grid-cols-7 gap-1 text-center text-[11px] font-medium uppercase tracking-wider text-ink/40">
             {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-              <div key={d} className="py-1">{d}</div>
+              <div key={d} className="py-1">
+                {d}
+              </div>
             ))}
           </div>
 
@@ -143,14 +154,14 @@ export default function DatePickerPage() {
                   key={day}
                   onClick={() => selectable && setSelectedDate(dateStr)}
                   disabled={!selectable}
-                  className={`aspect-square min-h-[44px] rounded-lg text-base font-medium transition-colors ${
+                  className={`aspect-square min-h-[44px] rounded-full text-base font-medium transition-colors ${
                     isSelected
-                      ? "bg-teal-600 text-white"
+                      ? "bg-terracotta text-cream"
                       : isToday
-                      ? "bg-teal-50 text-teal-700 hover:bg-teal-100"
+                      ? "bg-cream text-terracotta hover:bg-terracotta/10"
                       : selectable
-                      ? "text-gray-900 hover:bg-gray-100"
-                      : "text-gray-300 cursor-not-allowed"
+                      ? "text-ink hover:bg-cream"
+                      : "text-ink/20 cursor-not-allowed"
                   }`}
                 >
                   {day}
@@ -162,23 +173,27 @@ export default function DatePickerPage() {
 
         {/* Time slots */}
         {selectedDate && (
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-gray-900">Available times</h2>
+          <div className="mt-10">
+            <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink/60">
+              Available times
+            </p>
             {loadingSlots ? (
-              <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="mt-5 grid grid-cols-3 gap-2">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="h-10 rounded-lg bg-gray-100 animate-pulse" />
+                  <div key={i} className="h-12 animate-pulse rounded-2xl bg-ink/5" />
                 ))}
               </div>
             ) : slots.length === 0 ? (
-              <p className="mt-4 text-sm text-gray-500">No available times on this date. Try another day.</p>
+              <p className="mt-5 text-base text-ink/60">
+                Nothing open that day. Try another.
+              </p>
             ) : (
-              <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="mt-5 grid grid-cols-3 gap-2">
                 {slots.map((slot) => (
                   <button
                     key={slot.startUTC}
                     onClick={() => selectSlot(slot)}
-                    className="min-h-[48px] rounded-lg border border-gray-200 bg-white px-3 py-3 text-base font-medium text-gray-900 active:scale-95 hover:border-teal-300 hover:bg-teal-50 transition-all"
+                    className="min-h-[52px] rounded-2xl border border-ink/15 bg-white px-3 py-3 text-base font-medium text-ink transition-all hover:border-terracotta hover:bg-terracotta hover:text-cream active:scale-95"
                   >
                     {slot.time}
                   </button>
@@ -188,9 +203,9 @@ export default function DatePickerPage() {
           </div>
         )}
 
-        <footer className="mt-12 text-center text-xs text-gray-400">
+        <footer className="mt-20 border-t border-ink/10 pt-6 text-xs text-ink/50">
           Powered by{" "}
-          <a href="/" className="text-teal-500 hover:text-teal-600">
+          <a href="/" className="font-display font-semibold text-ink hover:text-terracotta">
             Hello! SlotBuddy
           </a>
         </footer>

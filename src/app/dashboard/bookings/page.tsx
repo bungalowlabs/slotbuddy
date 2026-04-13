@@ -14,13 +14,17 @@ interface Booking {
   createdAt: string;
 }
 
-const STATUS_BADGE: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  confirmed: "bg-teal-100 text-teal-700",
-  completed: "bg-green-100 text-green-700",
-  cancelled: "bg-gray-100 text-gray-500",
-  no_show: "bg-yellow-100 text-yellow-700",
+const STATUS_STYLES: Record<string, string> = {
+  pending: "bg-terracotta/15 text-terracotta-dark",
+  confirmed: "bg-teal-700 text-cream",
+  completed: "bg-ink text-cream",
+  cancelled: "border border-ink/15 text-ink/40",
+  no_show: "bg-terracotta text-cream",
 };
+
+function statusPill(status: string) {
+  return STATUS_STYLES[status] ?? "border border-ink/15 text-ink/60";
+}
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -64,76 +68,103 @@ export default function BookingsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Bookings</h1>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+            <span className="h-px w-8 bg-terracotta" />
+            Everything
+          </p>
+          <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+            Bookings
+          </h1>
+        </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+          className="flex-shrink-0 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm text-ink outline-none transition-colors focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20"
         >
           <option value="all">All statuses</option>
           <option value="pending">Pending approval</option>
           <option value="confirmed">Confirmed</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
-          <option value="no_show">No Show</option>
+          <option value="no_show">No show</option>
         </select>
       </div>
 
       {loading ? (
-        <div className="mt-6 space-y-3">
+        <div className="mt-10 space-y-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />
+            <div key={i} className="h-20 animate-pulse rounded-2xl bg-ink/5" />
           ))}
         </div>
       ) : bookings.length === 0 ? (
-        <div className="mt-12 text-center">
-          <p className="text-gray-500">
+        <div className="mt-16 border-t border-ink/10 pt-10 text-center">
+          <p className="text-base text-ink/60">
             {statusFilter === "all"
-              ? "No bookings yet. Share your booking link to start getting bookings."
+              ? "No bookings yet. Share your booking link and the first one will show up here."
               : `No ${statusFilter} bookings.`}
           </p>
         </div>
       ) : (
-        <div className="mt-6">
+        <div className="mt-10">
           {/* Desktop table */}
-          <div className="hidden md:block overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div className="hidden overflow-hidden rounded-3xl border border-ink/10 bg-white md:block">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-500">Customer</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-500">Service</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-500">Date & Time</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-500">Status</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500">Actions</th>
+              <thead>
+                <tr className="border-b border-ink/10 bg-cream">
+                  <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-ink/55">
+                    Customer
+                  </th>
+                  <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-ink/55">
+                    Service
+                  </th>
+                  <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-ink/55">
+                    Date & time
+                  </th>
+                  <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-ink/55">
+                    Status
+                  </th>
+                  <th className="px-5 py-4 text-right text-[11px] font-medium uppercase tracking-[0.15em] text-ink/55">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-ink/10">
                 {bookings.map((booking) => (
-                  <tr key={booking.id} className={booking.status === "cancelled" ? "opacity-50" : ""}>
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900">{booking.customerName}</div>
-                      <div className="text-xs text-gray-500">{booking.customerEmail}</div>
+                  <tr
+                    key={booking.id}
+                    className={booking.status === "cancelled" ? "opacity-50" : ""}
+                  >
+                    <td className="px-5 py-4">
+                      <div className="font-display text-base font-semibold text-ink">
+                        {booking.customerName}
+                      </div>
+                      <div className="text-xs text-ink/55">{booking.customerEmail}</div>
                     </td>
-                    <td className="px-4 py-3 text-gray-700">{booking.serviceName || "—"}</td>
-                    <td className="px-4 py-3 text-gray-700">{formatDateTime(booking.startTime)}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_BADGE[booking.status] || "bg-gray-100 text-gray-600"}`}>
+                    <td className="px-5 py-4 text-ink/75">{booking.serviceName || "—"}</td>
+                    <td className="px-5 py-4 text-ink/75">{formatDateTime(booking.startTime)}</td>
+                    <td className="px-5 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${statusPill(
+                          booking.status
+                        )}`}
+                      >
                         {booking.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-4 text-right">
                       {booking.status === "pending" && (
                         <div className="flex justify-end gap-1">
                           <button
                             onClick={() => updateStatus(booking.id, "confirmed")}
-                            className="rounded px-2 py-1 text-xs text-teal-600 hover:bg-teal-50"
+                            className="rounded-full px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
                           >
                             Approve
                           </button>
                           <button
                             onClick={() => updateStatus(booking.id, "cancelled")}
-                            className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+                            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink/50 transition-colors hover:bg-ink hover:text-cream"
                           >
                             Decline
                           </button>
@@ -143,13 +174,13 @@ export default function BookingsPage() {
                         <div className="flex justify-end gap-1">
                           <button
                             onClick={() => updateStatus(booking.id, "completed")}
-                            className="rounded px-2 py-1 text-xs text-green-600 hover:bg-green-50"
+                            className="rounded-full px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
                           >
                             Complete
                           </button>
                           <button
                             onClick={() => updateStatus(booking.id, "cancelled")}
-                            className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+                            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink/50 transition-colors hover:bg-ink hover:text-cream"
                           >
                             Cancel
                           </button>
@@ -163,51 +194,61 @@ export default function BookingsPage() {
           </div>
 
           {/* Mobile cards */}
-          <div className="md:hidden space-y-3">
+          <div className="space-y-3 md:hidden">
             {bookings.map((booking) => (
               <div
                 key={booking.id}
-                className={`rounded-xl border border-gray-200 bg-white p-4 ${
+                className={`rounded-3xl border border-ink/10 bg-white p-5 ${
                   booking.status === "cancelled" ? "opacity-50" : ""
                 }`}
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="font-medium text-gray-900">{booking.customerName}</div>
-                    <div className="text-xs text-gray-500">{booking.serviceName || "—"}</div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-display text-lg font-semibold text-ink">
+                      {booking.customerName}
+                    </div>
+                    <div className="mt-0.5 truncate text-xs text-ink/55">
+                      {booking.serviceName || "—"}
+                    </div>
                   </div>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_BADGE[booking.status] || "bg-gray-100 text-gray-600"}`}>
+                  <span
+                    className={`flex-shrink-0 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${statusPill(
+                      booking.status
+                    )}`}
+                  >
                     {booking.status}
                   </span>
                 </div>
-                <div className="mt-2 text-sm text-gray-600">{formatDateTime(booking.startTime)}</div>
+                <div className="mt-3 text-sm text-ink/70">
+                  {formatDateTime(booking.startTime)}
+                </div>
                 {booking.status === "pending" && (
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-4 flex gap-2">
                     <button
                       onClick={() => updateStatus(booking.id, "confirmed")}
-                      className="rounded-lg px-3 py-1 text-xs font-medium text-teal-600 border border-teal-200 hover:bg-teal-50"
+                      className="flex-1 rounded-full bg-teal-700 px-4 py-2 text-xs font-medium text-cream transition-colors hover:bg-teal-800"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => updateStatus(booking.id, "cancelled")}
-                      className="rounded-lg px-3 py-1 text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50"
+                      className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-medium text-ink transition-colors"
                     >
                       Decline
                     </button>
                   </div>
                 )}
                 {booking.status === "confirmed" && (
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-4 flex gap-2">
                     <button
                       onClick={() => updateStatus(booking.id, "completed")}
-                      className="rounded-lg px-3 py-1 text-xs font-medium text-green-600 border border-green-200 hover:bg-green-50"
+                      className="flex-1 rounded-full bg-teal-700 px-4 py-2 text-xs font-medium text-cream transition-colors hover:bg-teal-800"
                     >
                       Complete
                     </button>
                     <button
                       onClick={() => updateStatus(booking.id, "cancelled")}
-                      className="rounded-lg px-3 py-1 text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50"
+                      className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-medium text-ink transition-colors"
                     >
                       Cancel
                     </button>

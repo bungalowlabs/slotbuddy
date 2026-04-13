@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Stripe from "stripe";
+import { sendAdminNotification } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -43,6 +44,28 @@ export async function POST(req: NextRequest) {
             stripeCustomerId: customerId,
           })
           .where(eq(users.stripeCustomerId, customerId));
+
+        // Notify on new active subscriptions
+        if (event.type === "customer.subscription.created" && subscription.status === "active") {
+          const [subscriber] = await db
+            .select({ email: users.email, name: users.name })
+            .from(users)
+            .where(eq(users.stripeCustomerId, customerId))
+            .limit(1);
+
+          if (subscriber) {
+            sendAdminNotification({
+              subject: `New subscriber: ${subscriber.name || subscriber.email}`,
+              body: `
+                <h2>New Paid Subscriber!</h2>
+                <div style="background: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0;">
+                  <p style="margin: 0 0 8px;"><strong>Name:</strong> ${subscriber.name || "—"}</p>
+                  <p style="margin: 0;"><strong>Email:</strong> ${subscriber.email}</p>
+                </div>
+              `,
+            }).catch(() => {});
+          }
+        }
         break;
       }
 

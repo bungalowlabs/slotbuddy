@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { businesses } from "@/db/schema";
+import { businesses, availability } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -38,12 +38,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "That URL is already taken. Try a different one." }, { status: 400 });
   }
 
-  await db.insert(businesses).values({
+  const [newBusiness] = await db.insert(businesses).values({
     userId: session.user.id,
     name: name.trim(),
     slug: slug.trim(),
     timezone: timezone.trim(),
-  });
+  }).returning();
+
+  // Seed default Mon-Fri 9am-5pm availability
+  const defaultDays = [1, 2, 3, 4, 5]; // Mon-Fri
+  await db.insert(availability).values(
+    defaultDays.map((day) => ({
+      businessId: newBusiness.id,
+      dayOfWeek: day,
+      startTime: "09:00",
+      endTime: "17:00",
+      isEnabled: true,
+    }))
+  );
 
   return NextResponse.json({ success: true });
 }

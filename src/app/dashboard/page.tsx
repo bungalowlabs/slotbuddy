@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { businesses, services, availability, bookings } from "@/db/schema";
-import { and, eq, gte, lt, desc } from "drizzle-orm";
+import { and, eq, gte, lt, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { CopyLinkButton } from "@/components/copy-link-button";
 
@@ -32,8 +32,8 @@ export default async function DashboardHomePage() {
 
   const [activeServices, enabledAvailability, todayBookings, weekBookings, recentBookings] =
     await Promise.all([
-      db.select().from(services).where(and(eq(services.businessId, business.id), eq(services.isActive, true))),
-      db.select().from(availability).where(and(eq(availability.businessId, business.id), eq(availability.isEnabled, true))),
+      db.select().from(services).where(and(eq(services.businessId, business.id), sql`${services.isActive} IS TRUE`)),
+      db.select().from(availability).where(and(eq(availability.businessId, business.id), sql`${availability.isEnabled} IS TRUE`)),
       db
         .select()
         .from(bookings)
@@ -78,57 +78,80 @@ export default async function DashboardHomePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-        <p className="mt-1 text-sm text-gray-500">Here&apos;s what&apos;s happening with {business.name}.</p>
+        <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          <span className="h-px w-8 bg-terracotta" />
+          Dashboard
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Welcome <em className="italic text-terracotta">back</em>.
+        </h1>
+        <p className="mt-4 text-base text-ink/65">
+          Here&rsquo;s what&rsquo;s happening at {business.name}.
+        </p>
       </div>
 
       {/* Booking link card */}
-      <div className="rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50 to-white p-5">
-        <div className="flex items-start justify-between gap-4">
+      <section className="rounded-3xl border border-ink/10 bg-white p-6">
+        <div className="flex items-start justify-between gap-5">
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">Your booking link</p>
-            <p className="mt-1 truncate font-mono text-sm text-gray-900">/book/{business.slug}</p>
-            <p className="mt-2 text-xs text-gray-600">Share this with customers so they can book themselves.</p>
+            <p className="text-xs font-medium uppercase tracking-[0.15em] text-terracotta">
+              Your booking link
+            </p>
+            <p className="mt-2 truncate font-mono text-sm text-ink">
+              helloslotbuddy.com/book/{business.slug}
+            </p>
+            <p className="mt-3 text-sm text-ink/60">
+              Share this anywhere — Instagram bio, text messages, printed signs.
+            </p>
           </div>
           <div className="w-32 shrink-0">
             <CopyLinkButton slug={business.slug} />
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Stat strip */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-ink/10 sm:grid-cols-4">
         <Stat label="Today" value={todayCount} />
         <Stat label="This week" value={weekCount} />
         <Stat label="Active services" value={activeServices.length} />
         <Stat label="Days open / week" value={enabledAvailability.length} />
-      </div>
+      </section>
 
       {/* Today's schedule */}
-      <section className="rounded-xl border border-gray-200 bg-white">
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <h2 className="text-sm font-semibold text-gray-900">Today&apos;s schedule</h2>
-          <Link href="/dashboard/calendar" className="text-xs font-medium text-teal-600 hover:text-teal-700">
+      <section>
+        <div className="flex items-end justify-between border-b border-ink/10 pb-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink/50">
+              On the books
+            </p>
+            <h2 className="mt-1 font-display text-2xl font-bold text-ink">
+              Today&rsquo;s schedule
+            </h2>
+          </div>
+          <Link
+            href="/dashboard/calendar"
+            className="text-sm font-medium text-terracotta underline decoration-terracotta/30 underline-offset-4 hover:decoration-terracotta"
+          >
             Open calendar →
           </Link>
         </div>
         {todayBookings.length === 0 ? (
-          <div className="px-4 py-6 text-center text-sm text-gray-400">No bookings today.</div>
+          <p className="py-6 text-sm text-ink/50">Nothing scheduled today.</p>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-ink/10">
             {todayBookings.map((b) => (
-              <li key={b.id} className="flex items-center justify-between px-4 py-3">
+              <li key={b.id} className="flex items-center justify-between py-4">
                 <div>
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="font-display text-lg font-semibold text-ink">
                     {fmtTime(b.startTime)} — {fmtTime(b.endTime)}
                   </div>
-                  <div className="text-xs text-gray-500">{b.customerName}</div>
+                  <div className="mt-0.5 text-sm text-ink/60">{b.customerName}</div>
                 </div>
-                <span className="rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-700">
-                  {b.status}
-                </span>
+                <StatusPill status={b.status} />
               </li>
             ))}
           </ul>
@@ -136,29 +159,42 @@ export default async function DashboardHomePage() {
       </section>
 
       {/* Recent activity */}
-      <section className="rounded-xl border border-gray-200 bg-white">
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <h2 className="text-sm font-semibold text-gray-900">Recent activity</h2>
-          <Link href="/dashboard/bookings" className="text-xs font-medium text-teal-600 hover:text-teal-700">
+      <section>
+        <div className="flex items-end justify-between border-b border-ink/10 pb-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink/50">
+              Latest
+            </p>
+            <h2 className="mt-1 font-display text-2xl font-bold text-ink">
+              Recent activity
+            </h2>
+          </div>
+          <Link
+            href="/dashboard/bookings"
+            className="text-sm font-medium text-terracotta underline decoration-terracotta/30 underline-offset-4 hover:decoration-terracotta"
+          >
             All bookings →
           </Link>
         </div>
         {recentBookings.length === 0 ? (
-          <div className="px-4 py-6 text-center text-sm text-gray-400">No bookings yet.</div>
+          <p className="py-6 text-sm text-ink/50">No bookings yet.</p>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-ink/10">
             {recentBookings.map((b) => (
-              <li key={b.id} className="flex items-center justify-between px-4 py-3">
+              <li key={b.id} className="flex items-center justify-between py-4">
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-medium text-gray-900">{b.customerName}</div>
-                  <div className="text-xs text-gray-500">
-                    {new Date(b.startTime).toLocaleDateString("en-US", { month: "short", day: "numeric" })} at{" "}
-                    {fmtTime(b.startTime)}
+                  <div className="truncate font-display text-lg font-semibold text-ink">
+                    {b.customerName}
+                  </div>
+                  <div className="mt-0.5 text-sm text-ink/60">
+                    {new Date(b.startTime).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}{" "}
+                    at {fmtTime(b.startTime)}
                   </div>
                 </div>
-                <span className="ml-3 shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">
-                  {b.status}
-                </span>
+                <StatusPill status={b.status} />
               </li>
             ))}
           </ul>
@@ -167,30 +203,36 @@ export default async function DashboardHomePage() {
 
       {/* Setup checklist (auto-hides when complete) */}
       {!checklistComplete && (
-        <section className="rounded-xl border border-amber-200 bg-amber-50 p-5">
-          <h2 className="text-sm font-semibold text-amber-900">Finish setting up</h2>
-          <p className="mt-1 text-xs text-amber-800">A few steps to get your booking page ready.</p>
-          <ul className="mt-3 space-y-2">
+        <section className="rounded-3xl border-l-2 border-terracotta bg-terracotta/5 p-6">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+            Almost there
+          </p>
+          <h2 className="mt-2 font-display text-2xl font-bold text-ink">
+            Finish setting up.
+          </h2>
+          <ul className="mt-5 space-y-2">
             {checklist.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="flex items-center gap-3 rounded-lg bg-white/60 px-3 py-2 text-sm hover:bg-white"
+                  className="flex items-center gap-4 rounded-2xl bg-white/70 px-4 py-3 text-sm transition-colors hover:bg-white"
                 >
                   <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold ${
                       item.done
-                        ? "border-green-500 bg-green-500 text-white"
-                        : "border-amber-400 bg-white"
+                        ? "border-terracotta bg-terracotta text-cream"
+                        : "border-ink/20 bg-white text-ink/30"
                     }`}
                   >
-                    {item.done && (
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                    )}
+                    {item.done ? "✓" : ""}
                   </span>
-                  <span className={item.done ? "text-gray-500 line-through" : "font-medium text-gray-900"}>
+                  <span
+                    className={
+                      item.done
+                        ? "text-ink/50 line-through"
+                        : "font-medium text-ink"
+                    }
+                  >
                     {item.label}
                   </span>
                 </Link>
@@ -205,9 +247,19 @@ export default async function DashboardHomePage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
-      <div className="text-2xl font-bold text-gray-900">{value}</div>
-      <div className="mt-0.5 text-xs text-gray-500">{label}</div>
+    <div className="bg-white px-5 py-5">
+      <div className="font-display text-4xl font-bold text-ink">{value}</div>
+      <div className="mt-1 text-xs font-medium uppercase tracking-[0.15em] text-ink/50">
+        {label}
+      </div>
     </div>
+  );
+}
+
+function StatusPill({ status }: { status: string | null }) {
+  return (
+    <span className="rounded-full border border-ink/15 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-ink/70">
+      {status}
+    </span>
   );
 }

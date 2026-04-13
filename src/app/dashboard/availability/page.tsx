@@ -32,6 +32,9 @@ function formatTime(time: string): string {
   return `${hour}:${m.toString().padStart(2, "0")} ${period}`;
 }
 
+const selectClass =
+  "rounded-full border border-ink/15 bg-white px-4 py-2 text-sm text-ink outline-none transition-colors focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
+
 export default function AvailabilityPage() {
   const [schedule, setSchedule] = useState<DaySchedule[]>(DEFAULT_SCHEDULE);
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ export default function AvailabilityPage() {
         const loaded = DEFAULT_SCHEDULE.map((day) => {
           const match = slots.find((s: DaySchedule) => s.dayOfWeek === day.dayOfWeek);
           if (match) {
-            return { ...day, isEnabled: true, startTime: match.startTime, endTime: match.endTime };
+            return { ...day, isEnabled: true, startTime: match.startTime.slice(0, 5), endTime: match.endTime.slice(0, 5) };
           }
           return { ...day, isEnabled: false };
         });
@@ -82,10 +85,16 @@ export default function AvailabilityPage() {
   if (loading) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Availability</h1>
-        <div className="mt-6 space-y-3">
+        <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          <span className="h-px w-8 bg-terracotta" />
+          When you work
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Availability
+        </h1>
+        <div className="mt-8 space-y-3">
           {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-            <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />
+            <div key={i} className="h-16 animate-pulse rounded-2xl bg-ink/5" />
           ))}
         </div>
       </div>
@@ -94,73 +103,77 @@ export default function AvailabilityPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Availability</h1>
-          <p className="mt-1 text-sm text-gray-500">Set the hours you accept bookings</p>
+          <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+            <span className="h-px w-8 bg-terracotta" />
+            When you work
+          </p>
+          <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+            Availability
+          </h1>
+          <p className="mt-4 text-base text-ink/65">
+            Set the hours you accept bookings. Closed on a day? Just uncheck it.
+          </p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
+          className="flex-shrink-0 rounded-full bg-teal-700 px-5 py-2.5 text-sm font-medium text-cream transition-colors hover:bg-teal-800 disabled:opacity-50"
         >
-          {saving ? "Saving..." : saved ? "Saved!" : "Save schedule"}
+          {saving ? "Saving…" : saved ? "Saved ✓" : "Save schedule"}
         </button>
       </div>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
         {schedule.map((day) => (
           <div
             key={day.dayOfWeek}
-            className={`rounded-xl border bg-white p-4 ${
-              day.isEnabled ? "border-gray-200" : "border-gray-100 opacity-60"
+            className={`flex flex-wrap items-center gap-4 py-5 ${
+              day.isEnabled ? "" : "opacity-50"
             }`}
           >
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-3 min-w-[140px]">
-                <input
-                  type="checkbox"
-                  checked={day.isEnabled}
-                  onChange={(e) => updateDay(day.dayOfWeek, { isEnabled: e.target.checked })}
-                  className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-                />
-                <span className="text-sm font-medium text-gray-900">
-                  {DAY_NAMES[day.dayOfWeek]}
-                </span>
-              </label>
+            <label className="flex min-w-[160px] items-center gap-3">
+              <input
+                type="checkbox"
+                checked={day.isEnabled}
+                onChange={(e) => updateDay(day.dayOfWeek, { isEnabled: e.target.checked })}
+                className="h-4 w-4 rounded border-ink/30 text-terracotta focus:ring-terracotta/30"
+              />
+              <span className="font-display text-lg font-semibold text-ink">
+                {DAY_NAMES[day.dayOfWeek]}
+              </span>
+            </label>
 
-              {day.isEnabled && (
-                <div className="flex items-center gap-2">
-                  <select
-                    value={day.startTime}
-                    onChange={(e) => updateDay(day.dayOfWeek, { startTime: e.target.value })}
-                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
-                  >
-                    {TIME_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {formatTime(t)}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="text-sm text-gray-400">to</span>
-                  <select
-                    value={day.endTime}
-                    onChange={(e) => updateDay(day.dayOfWeek, { endTime: e.target.value })}
-                    className="rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
-                  >
-                    {TIME_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {formatTime(t)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {!day.isEnabled && (
-                <span className="text-sm text-gray-400">Closed</span>
-              )}
-            </div>
+            {day.isEnabled ? (
+              <div className="flex items-center gap-3">
+                <select
+                  value={day.startTime}
+                  onChange={(e) => updateDay(day.dayOfWeek, { startTime: e.target.value })}
+                  className={selectClass}
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={t} value={t}>
+                      {formatTime(t)}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-sm text-ink/40">→</span>
+                <select
+                  value={day.endTime}
+                  onChange={(e) => updateDay(day.dayOfWeek, { endTime: e.target.value })}
+                  className={selectClass}
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={t} value={t}>
+                      {formatTime(t)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <span className="text-sm italic text-ink/40">Closed</span>
+            )}
           </div>
         ))}
       </div>

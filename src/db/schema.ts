@@ -72,6 +72,22 @@ export const serviceFields = pgTable('service_fields', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+export const verificationTokens = pgTable('verification_token', {
+  identifier: text('identifier').notNull(),
+  token: text('token').notNull().unique(),
+  expires: timestamp('expires').notNull(),
+});
+
+export const feedback = pgTable('feedback', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  source: text('source').notNull(), // 'dashboard' | 'booking'
+  businessId: uuid('business_id').references(() => businesses.id, { onDelete: 'set null' }),
+  userEmail: text('user_email'),
+  message: text('message').notNull(),
+  rating: integer('rating'), // 1-5 optional
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
 export const blockedTimes = pgTable('blocked_times', {
   id: uuid('id').primaryKey().defaultRandom(),
   businessId: uuid('business_id').references(() => businesses.id, { onDelete: 'cascade' }).notNull(),

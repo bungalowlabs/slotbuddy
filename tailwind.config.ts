@@ -8,9 +8,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        cream: "#FAF7F2",
+        ink: "#1F2B2E",
+        terracotta: {
+          DEFAULT: "#C85B3A",
+          dark: "#A84826",
+        },
       },
     },
   },

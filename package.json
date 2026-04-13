@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,6 +16,7 @@
     "@anthropic-ai/sdk": "^0.86.1",
     "@auth/drizzle-adapter": "^1.11.1",
     "@neondatabase/serverless": "^1.0.2",
+    "@react-email/render": "^2.0.6",
     "drizzle-orm": "^0.45.2",
     "next": "14.2.35",
     "next-auth": "^5.0.0-beta.30",

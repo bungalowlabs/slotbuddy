@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY_PROD! });
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
     const prompt = targetField === "title"
       ? `Rewrite this service name to be clear, professional, and customer-friendly. Keep it short (2-5 words). No emojis, no quotes around the answer. Just the title text.

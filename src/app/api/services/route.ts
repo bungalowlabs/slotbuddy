@@ -30,7 +30,7 @@ export async function GET() {
     .where(eq(services.businessId, business.id))
     .orderBy(asc(services.sortOrder), asc(services.createdAt));
 
-  return NextResponse.json(allServices);
+  return NextResponse.json({ services: allServices, slug: business.slug });
 }
 
 export async function POST(req: Request) {

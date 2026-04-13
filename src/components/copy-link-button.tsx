@@ -15,9 +15,9 @@ export function CopyLinkButton({ slug }: { slug: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="mt-2 w-full rounded-md bg-teal-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-teal-700 transition-colors"
+      className="mt-3 w-full rounded-full bg-ink px-4 py-2 text-xs font-medium text-cream transition-colors hover:bg-ink/90"
     >
-      {copied ? "Copied!" : "Copy link"}
+      {copied ? "Copied ✓" : "Copy link"}
     </button>
   );
 }

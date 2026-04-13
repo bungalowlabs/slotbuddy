@@ -12,6 +12,13 @@ interface Business {
   timezone: string;
 }
 
+const inputClass =
+  "mt-2 block w-full rounded-2xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink placeholder-ink/30 outline-none transition-colors focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
+const readOnlyClass =
+  "mt-2 block w-full rounded-2xl border border-ink/10 bg-cream px-4 py-3 text-sm text-ink/60";
+const labelClass =
+  "block text-xs font-medium uppercase tracking-[0.15em] text-ink/60";
+
 export default function SettingsPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,21 +69,32 @@ export default function SettingsPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  const [billingError, setBillingError] = useState("");
+
   async function handleManageBilling() {
+    setBillingError("");
     const res = await fetch("/api/stripe/portal", { method: "POST" });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;
+    } else {
+      setBillingError(data.error || "Unable to open billing portal");
     }
   }
 
   if (loading) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <div className="mt-6 space-y-4">
+        <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          <span className="h-px w-8 bg-terracotta" />
+          Your shop
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Settings
+        </h1>
+        <div className="mt-10 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 rounded-xl bg-gray-100 animate-pulse" />
+            <div key={i} className="h-32 animate-pulse rounded-3xl bg-ink/5" />
           ))}
         </div>
       </div>
@@ -88,85 +106,108 @@ export default function SettingsPage() {
   const bookingUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/book/${business.slug}`;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+    <div className="space-y-10">
+      <div>
+        <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          <span className="h-px w-8 bg-terracotta" />
+          Your shop
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Settings
+        </h1>
+      </div>
 
-      {/* Booking Link */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-gray-900">Your booking link</h2>
-        <p className="mt-1 text-sm text-gray-500">Share this with your customers</p>
-        <div className="mt-3 flex items-center gap-2">
+      {/* Booking link */}
+      <section className="rounded-3xl border border-ink/10 bg-white p-7">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          Share this
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-bold text-ink">
+          Your booking link
+        </h2>
+        <p className="mt-2 text-sm text-ink/60">
+          Paste it in your Instagram bio, text it to regulars, stick it on a sign.
+        </p>
+        <div className="mt-5 flex items-stretch gap-2">
           <input
             type="text"
             readOnly
             value={bookingUrl}
-            className="flex-1 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+            className="flex-1 rounded-2xl border border-ink/10 bg-cream px-4 py-3 font-mono text-xs text-ink/70"
           />
           <button
             onClick={handleCopyLink}
-            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors"
+            className="rounded-full bg-ink px-5 py-3 text-sm font-medium text-cream transition-colors hover:bg-ink/90"
           >
-            {copied ? "Copied!" : "Copy"}
+            {copied ? "Copied ✓" : "Copy"}
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* Business Info */}
-      <form onSubmit={handleSave} className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-gray-900">Business information</h2>
+      {/* Business info */}
+      <form
+        onSubmit={handleSave}
+        className="rounded-3xl border border-ink/10 bg-white p-7"
+      >
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          Details
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-bold text-ink">
+          Business information
+        </h2>
 
-        <div className="mt-4 space-y-4">
+        <div className="mt-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Business name</label>
+            <label className={labelClass}>Business name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className={labelClass}>Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
               placeholder="Brief description shown on your booking page"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Phone</label>
+              <label className={labelClass}>Phone</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="(555) 123-4567"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Address</label>
+              <label className={labelClass}>Address</label>
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="123 Main St"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+                className={inputClass}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Time zone</label>
+            <label className={labelClass}>Time zone</label>
             <input
               type="text"
               readOnly
               value={business.timezone.replace(/_/g, " ")}
-              className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500"
+              className={readOnlyClass}
             />
           </div>
         </div>
@@ -174,25 +215,35 @@ export default function SettingsPage() {
         <button
           type="submit"
           disabled={saving}
-          className="mt-4 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
+          className="mt-6 rounded-full bg-teal-700 px-6 py-3 text-sm font-medium text-cream transition-colors hover:bg-teal-800 disabled:opacity-50"
         >
-          {saving ? "Saving..." : saved ? "Saved!" : "Save changes"}
+          {saving ? "Saving…" : saved ? "Saved ✓" : "Save changes"}
         </button>
       </form>
 
       {/* Billing */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-gray-900">Billing</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Manage your subscription and payment method
+      <section className="rounded-3xl border border-ink/10 bg-white p-7">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          Money
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-bold text-ink">Billing</h2>
+        <p className="mt-2 text-sm text-ink/60">
+          Manage your subscription and payment method through Stripe.
         </p>
         <button
           onClick={handleManageBilling}
-          className="mt-4 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          className="mt-5 rounded-full border border-ink/15 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink/30"
         >
-          Manage billing
+          Manage billing →
         </button>
-      </div>
+        {billingError && (
+          <p className="mt-3 text-sm text-terracotta">
+            {billingError === "No billing account found"
+              ? "Billing portal is available after you subscribe. You're currently on a free trial."
+              : billingError}
+          </p>
+        )}
+      </section>
     </div>
   );
 }

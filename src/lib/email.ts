@@ -133,6 +133,38 @@ export async function sendCancellationConfirmation({
   });
 }
 
+export async function sendAdminNotification({
+  subject,
+  body,
+}: {
+  subject: string;
+  body: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const enabled = process.env.ADMIN_NOTIFICATIONS !== "false";
+  if (!adminEmail || !enabled) return;
+
+  const fromEmail = process.env.FROM_EMAIL || "Hello! SlotBuddy <onboarding@resend.dev>";
+  const resend = getResend();
+
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: adminEmail,
+      subject,
+      html: `
+        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto;">
+          ${body}
+          <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
+          <p style="color: #9ca3af; font-size: 12px;">Sent by Hello! SlotBuddy</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Admin notification failed:", err);
+  }
+}
+
 export async function sendBookingReminder({
   customerEmail,
   customerName,

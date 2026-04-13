@@ -100,46 +100,63 @@ export default function ConfirmPage() {
       })
     : "";
 
+  const inputClass =
+    "mt-2 block w-full rounded-2xl border border-ink/15 bg-white px-5 py-4 text-base text-ink placeholder-ink/30 outline-none transition-colors focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
+
+  const labelClass =
+    "block text-xs font-medium uppercase tracking-[0.15em] text-ink/60";
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
-      <div className="mx-auto max-w-lg px-4 py-6 sm:py-8">
+    <div className="min-h-screen bg-cream pb-32 text-ink">
+      <div className="mx-auto max-w-lg px-5 pt-8">
         <button
           onClick={() => router.back()}
-          className="-ml-2 px-2 py-2 text-base text-teal-600 hover:text-teal-700 mb-2"
+          className="-ml-1 mb-6 text-sm font-medium text-ink/60 transition-colors hover:text-terracotta"
         >
-          &larr; Back
+          ← Back
         </button>
 
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Confirm your booking</h1>
+        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          Step 3 — Your details
+        </p>
+        <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+          Almost <em className="italic text-terracotta">there</em>.
+        </h1>
 
-        <div className="mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4">
-          <div className="text-base font-medium text-teal-900">{formattedDate}</div>
-          <div className="text-base text-teal-700">{timeStr}</div>
+        <div className="mt-8 border-l-2 border-terracotta pl-5">
+          <p className="font-display text-xl font-semibold text-ink">{formattedDate}</p>
+          <p className="mt-1 text-lg text-ink/70">{timeStr}</p>
         </div>
 
         {error && (
-          <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+          <div className="mt-6 rounded-2xl border border-terracotta/30 bg-terracotta/5 px-5 py-4 text-sm text-terracotta-dark">
             {error}
           </div>
         )}
 
-        <form id="booking-form" onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form id="booking-form" onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <label htmlFor="cust-name" className={labelClass}>
+              Name
+            </label>
             <input
+              id="cust-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               autoComplete="name"
               placeholder="Your full name"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-3 text-base text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="cust-email" className={labelClass}>
+              Email
+            </label>
             <input
+              id="cust-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -147,30 +164,33 @@ export default function ConfirmPage() {
               autoComplete="email"
               inputMode="email"
               placeholder="you@email.com"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-3 text-base text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Phone <span className="text-gray-400">(optional)</span>
+            <label htmlFor="cust-phone" className={labelClass}>
+              Phone <span className="normal-case tracking-normal text-ink/40">(optional)</span>
             </label>
             <input
+              id="cust-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               autoComplete="tel"
               inputMode="tel"
               placeholder="(555) 123-4567"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-3 text-base text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           {customFields.map((field) => (
             <div key={field.id}>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className={labelClass}>
                 {field.label}
-                {!field.required && <span className="text-gray-400"> (optional)</span>}
+                {!field.required && (
+                  <span className="normal-case tracking-normal text-ink/40"> (optional)</span>
+                )}
               </label>
               {field.fieldType === "textarea" ? (
                 <textarea
@@ -179,43 +199,53 @@ export default function ConfirmPage() {
                     setFieldValues((v) => ({ ...v, [field.id]: e.target.value }))
                   }
                   required={field.required}
-                  rows={3}
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-3 text-base text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none resize-none"
+                  rows={4}
+                  className={`${inputClass} resize-none`}
                 />
               ) : (
                 <input
-                  type={field.fieldType === "email" || field.fieldType === "tel" ? field.fieldType : "text"}
-                  inputMode={field.fieldType === "tel" ? "tel" : field.fieldType === "email" ? "email" : undefined}
+                  type={
+                    field.fieldType === "email" || field.fieldType === "tel"
+                      ? field.fieldType
+                      : "text"
+                  }
+                  inputMode={
+                    field.fieldType === "tel"
+                      ? "tel"
+                      : field.fieldType === "email"
+                      ? "email"
+                      : undefined
+                  }
                   value={fieldValues[field.id] || ""}
                   onChange={(e) =>
                     setFieldValues((v) => ({ ...v, [field.id]: e.target.value }))
                   }
                   required={field.required}
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-3 text-base text-gray-900 placeholder-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none"
+                  className={inputClass}
                 />
               )}
             </div>
           ))}
         </form>
 
-        <footer className="mt-12 text-center text-xs text-gray-400">
+        <footer className="mt-16 border-t border-ink/10 pt-6 text-xs text-ink/50">
           Powered by{" "}
-          <a href="/" className="text-teal-500 hover:text-teal-600">
+          <a href="/" className="font-display font-semibold text-ink hover:text-terracotta">
             Hello! SlotBuddy
           </a>
         </footer>
       </div>
 
       {/* Sticky mobile CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-4 py-3 sm:py-4 safe-area-inset-bottom">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-ink/10 bg-cream/95 px-5 py-4 backdrop-blur">
         <div className="mx-auto max-w-lg">
           <button
             type="submit"
             form="booking-form"
             disabled={loading || !name.trim() || !email.trim() || missingRequired}
-            className="w-full rounded-lg bg-teal-600 px-4 py-4 text-base font-semibold text-white hover:bg-teal-700 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-full bg-teal-700 px-7 py-4 text-base font-medium text-cream transition-colors hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? "Booking..." : "Confirm booking"}
+            {loading ? "Booking…" : "Confirm booking →"}
           </button>
         </div>
       </div>

@@ -129,7 +129,7 @@ Add all env vars to **Production** environment:
 | `RESEND_API_KEY` | Resend Dashboard |
 | `FROM_EMAIL` | `Your App <noreply@yourdomain.com>` |
 | `CRON_SECRET` | Generate: `openssl rand -base64 32` |
-| `ANTHROPIC_API_KEY_PROD` | Anthropic Console (if using AI features) |
+| `ANTHROPIC_API_KEY` | Anthropic Console (if using AI features) |
 | `DATABASE_URL` | Auto from Vercel Postgres |
 | `DATABASE_URL_UNPOOLED` | Auto from Vercel Postgres |
 

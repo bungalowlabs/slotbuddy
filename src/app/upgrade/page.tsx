@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function UpgradePage() {
   const [loading, setLoading] = useState(false);
@@ -16,51 +17,82 @@ export default function UpgradePage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Your trial has ended</h1>
-        <p className="mt-2 text-gray-600">
-          Subscribe to Hello! SlotBuddy to keep managing your bookings.
-        </p>
+    <div className="min-h-screen bg-cream text-ink">
+      {/* Wordmark */}
+      <div className="mx-auto max-w-6xl px-6 py-6">
+        <Link href="/" className="font-display text-xl font-bold tracking-tight">
+          Hello!<span className="text-terracotta"> SlotBuddy</span>
+        </Link>
+      </div>
 
-        <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-          <div className="flex items-baseline justify-center gap-1">
-            <span className="text-5xl font-bold text-gray-900">$15</span>
-            <span className="text-gray-500">/month</span>
+      <div className="mx-auto max-w-5xl px-6 pb-20 pt-10 lg:pt-16">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          {/* Left: editorial header */}
+          <div className="lg:col-span-5">
+            <p className="mb-5 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+              <span className="h-px w-8 bg-terracotta" />
+              Trial ended
+            </p>
+            <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight text-ink lg:text-6xl">
+              Keep it{" "}
+              <em className="italic text-terracotta">rolling</em>.
+            </h1>
+            <p className="mt-6 text-lg leading-relaxed text-ink/70">
+              Your 14 days are up. Subscribe and everything picks up exactly where you
+              left off — services, availability, bookings, the works.
+            </p>
+            <p className="mt-6 hidden text-sm text-ink/55 lg:block">
+              Your public booking page stays live while you decide. Customers won&rsquo;t
+              see a thing.
+            </p>
           </div>
-          <ul className="mt-6 space-y-3 text-left text-sm text-gray-600">
-            <li className="flex items-center gap-3">
-              <svg className="h-5 w-5 flex-shrink-0 text-teal-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              Unlimited services and bookings
-            </li>
-            <li className="flex items-center gap-3">
-              <svg className="h-5 w-5 flex-shrink-0 text-teal-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              Public booking page
-            </li>
-            <li className="flex items-center gap-3">
-              <svg className="h-5 w-5 flex-shrink-0 text-teal-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              Email confirmations and reminders
-            </li>
-          </ul>
 
-          <button
-            onClick={handleSubscribe}
-            disabled={loading}
-            className="mt-8 w-full rounded-lg bg-teal-600 px-4 py-3 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
-          >
-            {loading ? "Loading..." : "Subscribe now"}
-          </button>
+          {/* Right: pricing card */}
+          <div className="lg:col-span-7">
+            <div className="rounded-3xl border border-ink/10 bg-white p-8 lg:p-10">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+                One plan
+              </p>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-display text-6xl font-bold text-ink lg:text-7xl">
+                  $15
+                </span>
+                <span className="text-lg text-ink/60">/month</span>
+              </div>
+              <p className="mt-3 text-sm text-ink/60">
+                Per business. No per-booking fees. Cancel anytime.
+              </p>
+
+              <ul className="mt-8 space-y-4 border-l-2 border-terracotta pl-6 text-base text-ink/80">
+                {[
+                  "Unlimited services and bookings",
+                  "Your public booking page stays live",
+                  "Calendar dashboard with approvals",
+                  "Email confirmations and reminders",
+                  "Customer cancellation links",
+                  "Your time zone, your business hours",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-2.5 h-1 w-1 flex-shrink-0 rounded-full bg-terracotta" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={handleSubscribe}
+                disabled={loading}
+                className="mt-10 w-full rounded-full bg-teal-700 px-7 py-4 text-base font-medium text-cream transition-colors hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading ? "Loading…" : "Subscribe & keep going →"}
+              </button>
+
+              <p className="mt-5 text-center text-xs text-ink/45">
+                Secured by Stripe · Cancel anytime from Settings
+              </p>
+            </div>
+          </div>
         </div>
-
-        <p className="mt-6 text-xs text-gray-400">
-          Your public booking page remains accessible to your customers.
-        </p>
       </div>
     </div>
   );

@@ -2,20 +2,22 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream text-ink">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
-        <span className="text-xl font-bold text-gray-900">Hello! SlotBuddy</span>
-        <div className="flex items-center gap-4">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <Link href="/" className="font-display text-xl font-bold tracking-tight">
+          Hello!<span className="text-terracotta"> SlotBuddy</span>
+        </Link>
+        <div className="flex items-center gap-6">
           <Link
             href="/login"
-            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
           >
             Sign in
           </Link>
           <Link
             href="/signup"
-            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors"
+            className="rounded-full bg-teal-700 px-5 py-2.5 text-sm font-medium text-cream transition-colors hover:bg-teal-800"
           >
             Start free trial
           </Link>
@@ -23,176 +25,238 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="px-6 pt-20 pb-16 max-w-4xl mx-auto text-center">
-        <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-          Your booking page,
-          <span className="text-teal-600"> live in 5 minutes</span>.
-        </h1>
-        <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-          Hello! SlotBuddy lets your customers book appointments online — no app
-          downloads, no account required. Set up your services, share your link,
-          and start getting bookings today.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <Link
-            href="/signup"
-            className="rounded-lg bg-teal-600 px-6 py-3 text-base font-medium text-white hover:bg-teal-700 transition-colors"
-          >
-            Start your 14-day free trial
-          </Link>
-        </div>
-        <p className="mt-4 text-sm text-gray-500">
-          $15/month after trial. Cancel anytime.
-        </p>
+      <section className="mx-auto max-w-6xl px-6 pb-24 pt-12 lg:pb-32 lg:pt-16">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+          {/* Left: headline */}
+          <div className="lg:col-span-7">
+            <p className="mb-6 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+              <span className="h-px w-10 bg-terracotta" />
+              Online booking, humanized
+            </p>
+            <h1 className="font-display text-[clamp(2.75rem,7vw,5.5rem)] font-bold leading-[0.95] tracking-tight text-ink">
+              Your booking page,{" "}
+              <em className="italic text-terracotta">live before your coffee</em> goes cold.
+            </h1>
+            <p className="mt-8 max-w-xl text-lg leading-relaxed text-ink/75">
+              Hello! SlotBuddy gives your customers a simple place to pick a time — no app,
+              no account, no friction. You run your business. We&rsquo;ll run the calendar.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <Link
+                href="/signup"
+                className="rounded-full bg-teal-700 px-7 py-3.5 text-base font-medium text-cream transition-colors hover:bg-teal-800"
+              >
+                Start your 14-day trial
+              </Link>
+              <Link
+                href="#how"
+                className="group flex items-center gap-2 text-base font-medium text-ink"
+              >
+                See how it works
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </Link>
+            </div>
+            <p className="mt-5 text-sm text-ink/60">
+              $15/month after. Cancel anytime. No credit card to try.
+            </p>
+          </div>
 
-      </section>
-
-      {/* Features */}
-      <section className="px-6 py-20 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center">
-            How it works
-          </h2>
-          <div className="mt-12 grid gap-8 sm:grid-cols-3">
-            <FeatureCard
-              step="1"
-              title="Add your services"
-              description="List what you offer — haircuts, training sessions, detailing packages — with durations and prices."
-            />
-            <FeatureCard
-              step="2"
-              title="Set your availability"
-              description="Tell us when you work. Monday through Friday, weekends only, whatever fits your schedule."
-            />
-            <FeatureCard
-              step="3"
-              title="Share your booking link"
-              description="Customers visit your page, pick a service, choose a time, and book — all without creating an account."
-            />
+          {/* Right: tilted mock booking card */}
+          <div className="relative lg:col-span-5 lg:pt-12">
+            <div className="relative mx-auto max-w-sm -rotate-[2.5deg] rounded-3xl bg-white p-6 shadow-[0_30px_60px_-15px_rgba(31,43,46,0.25)] ring-1 ring-ink/5">
+              <div className="flex items-center justify-between border-b border-ink/10 pb-4">
+                <div>
+                  <p className="font-display text-lg font-semibold text-ink">
+                    Joe&rsquo;s Barbershop
+                  </p>
+                  <p className="text-xs text-ink/60">Downtown · Open today</p>
+                </div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 font-display text-lg font-bold text-cream">
+                  J
+                </div>
+              </div>
+              <p className="mt-4 text-xs font-medium uppercase tracking-wider text-ink/50">
+                Pick a time
+              </p>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {["9:00", "9:30", "10:00", "10:30", "11:00", "11:30"].map((t, i) => (
+                  <div
+                    key={t}
+                    className={`rounded-xl border px-3 py-2 text-center text-sm font-medium ${
+                      i === 2
+                        ? "border-teal-700 bg-teal-700 text-cream"
+                        : "border-ink/15 text-ink/75"
+                    }`}
+                  >
+                    {t}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl bg-cream p-3 text-sm">
+                <p className="font-medium text-ink">Classic cut — 30 min</p>
+                <p className="text-ink/60">$35 · with Joe</p>
+              </div>
+              <div className="mt-4 w-full rounded-full bg-terracotta py-3 text-center font-medium text-cream">
+                Confirm booking
+              </div>
+            </div>
+            {/* Rotated sticker */}
+            <div className="absolute -bottom-4 left-2 hidden rotate-[6deg] rounded-2xl bg-ink px-4 py-2 font-display text-sm font-semibold text-cream shadow-lg lg:block">
+              No app required ✿
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Who it's for */}
-      <section className="px-6 py-20">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center">
-            Built for small service businesses
+      {/* Divider */}
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="h-px bg-ink/10" />
+      </div>
+
+      {/* How it works */}
+      <section id="how" className="mx-auto max-w-6xl px-6 py-24 lg:py-32">
+        <div className="mb-16 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
+          <div>
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+              The whole thing
+            </p>
+            <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-ink lg:text-5xl">
+              Three steps. One afternoon.
+            </h2>
+          </div>
+          <p className="max-w-xs text-ink/70 lg:text-right">
+            We built this for the five-chair shop down the street — not the Fortune 500.
+          </p>
+        </div>
+        <div className="space-y-12 lg:space-y-16">
+          {[
+            {
+              num: "01",
+              title: "Tell us what you do",
+              body: "Add your services — haircuts, training sessions, detailing packages. Set durations and prices. If you change your mind tomorrow, change them tomorrow.",
+            },
+            {
+              num: "02",
+              title: "Tell us when you work",
+              body: "Monday mornings only? Wednesday through Saturday? Closed on Tuesdays because that's your kid's soccer day? All of that is a checkbox.",
+            },
+            {
+              num: "03",
+              title: "Share your link",
+              body: "You get helloslotbuddy.com/book/your-shop. Put it in your Instagram bio, text it to your regulars, stick it on a sign. Bookings start showing up.",
+            },
+          ].map((step) => (
+            <div
+              key={step.num}
+              className="grid gap-6 border-t border-ink/10 pt-12 lg:grid-cols-12"
+            >
+              <p className="font-display text-6xl font-bold italic leading-none text-terracotta lg:col-span-2 lg:text-7xl">
+                {step.num}
+              </p>
+              <div className="lg:col-span-8">
+                <h3 className="font-display text-2xl font-bold text-ink lg:text-3xl">
+                  {step.title}
+                </h3>
+                <p className="mt-3 max-w-2xl text-lg leading-relaxed text-ink/75">{step.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Who it's for — dark section */}
+      <section className="bg-ink text-cream">
+        <div className="mx-auto max-w-6xl px-6 py-24 lg:py-32">
+          <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+            Built for
+          </p>
+          <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight lg:text-6xl">
+            The person who{" "}
+            <em className="italic text-terracotta">actually</em> runs the shop.
           </h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <BusinessType icon="scissors" label="Barbers & Salons" />
-            <BusinessType icon="dumbbell" label="Personal Trainers" />
-            <BusinessType icon="car" label="Auto Detailers" />
-            <BusinessType icon="hands" label="Massage Therapists" />
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-cream/75">
+            Whether you&rsquo;re cutting hair, changing oil, training clients, or kneading
+            backs — your customers want to pick a time without texting you at 10pm.
+          </p>
+          <div className="mt-12 flex flex-wrap gap-3">
+            {[
+              "Barbershops",
+              "Hair salons",
+              "Personal trainers",
+              "Auto detailing",
+              "Massage therapy",
+              "Tattoo studios",
+              "Nail techs",
+              "Dog groomers",
+            ].map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-cream/25 px-4 py-2 text-sm text-cream/90"
+              >
+                {t}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="px-6 py-20 bg-gray-50">
-        <div className="max-w-md mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Simple pricing</h2>
-          <p className="mt-4 text-gray-600">
-            One plan. Everything included. No surprises.
-          </p>
-          <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-            <div className="flex items-baseline justify-center gap-1">
-              <span className="text-5xl font-bold text-gray-900">$15</span>
-              <span className="text-gray-500">/month per business</span>
+      <section className="mx-auto max-w-6xl px-6 py-24 lg:py-32">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+              One plan, no surprises
+            </p>
+            <h2 className="font-display text-5xl font-bold leading-[0.95] tracking-tight text-ink lg:text-6xl">
+              Fifteen dollars.
+            </h2>
+            <p className="mt-5 max-w-md text-lg text-ink/70">
+              Per month, per business. No per-booking fees. No &ldquo;enterprise&rdquo; tier. No
+              sales calls ever.
+            </p>
+            <div className="mt-8 flex items-baseline gap-2">
+              <span className="font-display text-6xl font-bold text-ink">$15</span>
+              <span className="text-lg text-ink/60">/month</span>
             </div>
-            <ul className="mt-8 space-y-3 text-left text-sm text-gray-600">
-              <PricingItem text="14-day free trial" />
-              <PricingItem text="Unlimited services and bookings" />
-              <PricingItem text="Public booking page with your own link" />
-              <PricingItem text="Calendar dashboard" />
-              <PricingItem text="Email confirmations and reminders" />
-              <PricingItem text="Customer cancellation via email link" />
-            </ul>
             <Link
               href="/signup"
-              className="mt-8 block w-full rounded-lg bg-teal-600 px-4 py-3 text-center text-sm font-medium text-white hover:bg-teal-700 transition-colors"
+              className="mt-8 inline-block rounded-full bg-teal-700 px-7 py-3.5 text-base font-medium text-cream transition-colors hover:bg-teal-800"
             >
-              Start free trial
+              Start 14-day free trial
             </Link>
+          </div>
+          <div className="lg:col-span-7">
+            <ul className="space-y-5 border-l-2 border-terracotta pl-8">
+              {[
+                "14-day free trial, no credit card",
+                "Unlimited services and bookings",
+                "Your own booking link on helloslotbuddy.com",
+                "Calendar dashboard with drag-to-reschedule",
+                "Automatic email confirmations and reminders",
+                "Customers can cancel via email link",
+                "Your time zone, your business hours, your rules",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-4 text-lg text-ink/80">
+                  <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-terracotta" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 px-6 py-8">
-        <div className="max-w-6xl mx-auto text-center text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} Hello! SlotBuddy. All rights reserved.
+      <footer className="border-t border-ink/10">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-10 sm:flex-row sm:items-center">
+          <p className="font-display text-lg font-bold">
+            Hello!<span className="text-terracotta"> SlotBuddy</span>
+          </p>
+          <p className="text-sm text-ink/60">
+            &copy; {new Date().getFullYear()} · Made for small shops
+          </p>
         </div>
       </footer>
     </div>
-  );
-}
-
-function FeatureCard({
-  step,
-  title,
-  description,
-}: {
-  step: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100 text-sm font-bold text-teal-700">
-        {step}
-      </div>
-      <h3 className="mt-4 text-lg font-semibold text-gray-900">{title}</h3>
-      <p className="mt-2 text-sm text-gray-600">{description}</p>
-    </div>
-  );
-}
-
-function BusinessType({ icon, label }: { icon: string; label: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    scissors: (
-      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.848 8.25l1.536.887M7.848 8.25a3 3 0 11-5.196-3 3 3 0 015.196 3zm1.536.887a2.165 2.165 0 011.083 1.839c.005.351.054.695.14 1.024M9.384 9.137l2.077 1.199M7.848 15.75l1.536-.887m-1.536.887a3 3 0 11-5.196 3 3 3 0 015.196-3zm1.536-.887a2.165 2.165 0 001.083-1.838c.005-.352.054-.695.14-1.025m-1.223 2.863l2.077-1.199m0-3.328a4.323 4.323 0 012.068-1.379l5.325-1.628a4.5 4.5 0 012.48-.044l.803.215-7.794 4.5m-2.882-1.664A4.331 4.331 0 0010.607 12m3.736 0l7.794 4.5-.802.215a4.5 4.5 0 01-2.48-.043l-5.326-1.629a4.324 4.324 0 01-2.068-1.379M14.343 12l-2.882 1.664" />
-      </svg>
-    ),
-    dumbbell: (
-      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-      </svg>
-    ),
-    car: (
-      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-      </svg>
-    ),
-    hands: (
-      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
-      </svg>
-    ),
-  };
-
-  return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-white p-6 text-center">
-      <div className="text-teal-600">{icons[icon]}</div>
-      <span className="text-sm font-medium text-gray-900">{label}</span>
-    </div>
-  );
-}
-
-function PricingItem({ text }: { text: string }) {
-  return (
-    <li className="flex items-center gap-3">
-      <svg
-        className="h-5 w-5 flex-shrink-0 text-teal-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-      </svg>
-      {text}
-    </li>
   );
 }

@@ -14,12 +14,20 @@ interface Booking {
   serviceDuration: number | null;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  confirmed: "bg-teal-100 border-teal-200 text-teal-800",
-  completed: "bg-green-100 border-green-200 text-green-800",
-  cancelled: "bg-gray-100 border-gray-200 text-gray-500 line-through",
-  no_show: "bg-yellow-100 border-yellow-200 text-yellow-800",
+const STATUS_STYLES: Record<string, string> = {
+  confirmed: "bg-teal-700 text-cream",
+  completed: "bg-ink text-cream",
+  cancelled: "border border-ink/15 text-ink/40 line-through",
+  no_show: "bg-terracotta text-cream",
+  pending: "bg-terracotta/15 text-terracotta-dark",
 };
+
+function statusPill(status: string) {
+  return (
+    STATUS_STYLES[status] ??
+    "border border-ink/15 text-ink/60"
+  );
+}
 
 export default function CalendarPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -121,21 +129,29 @@ export default function CalendarPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-        <div className="flex items-center gap-2">
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+            <span className="h-px w-8 bg-terracotta" />
+            What&rsquo;s booked
+          </p>
+          <h1 className="font-display text-4xl font-bold leading-[1.0] tracking-tight sm:text-5xl">
+            Calendar
+          </h1>
+        </div>
+        <div className="flex items-center gap-1 rounded-full border border-ink/10 bg-white p-1">
           <button
             onClick={() => setView("day")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              view === "day" ? "bg-teal-100 text-teal-700" : "text-gray-600 hover:bg-gray-100"
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              view === "day" ? "bg-ink text-cream" : "text-ink/60 hover:text-ink"
             }`}
           >
             Day
           </button>
           <button
             onClick={() => setView("week")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              view === "week" ? "bg-teal-100 text-teal-700" : "text-gray-600 hover:bg-gray-100"
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              view === "week" ? "bg-ink text-cream" : "text-ink/60 hover:text-ink"
             }`}
           >
             Week
@@ -144,85 +160,100 @@ export default function CalendarPage() {
       </div>
 
       {/* Navigation */}
-      <div className="mt-4 flex items-center justify-between">
-        <button onClick={() => navigate(-1)} className="rounded-lg p-2 hover:bg-gray-100">
-          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
+      <div className="mt-8 flex items-center justify-between border-y border-ink/10 py-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition-colors hover:bg-cream hover:text-ink"
+          aria-label="Previous"
+        >
+          ←
         </button>
-        <div className="flex items-center gap-3">
-          <div className="text-sm font-medium text-gray-900">
+        <div className="flex items-center gap-4">
+          <div className="font-display text-base font-semibold text-ink">
             {view === "week"
               ? `${formatDate(weekDays[0])} — ${formatDate(weekDays[6])}`
               : formatDate(currentDate)}
           </div>
           <button
             onClick={goToToday}
-            className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+            className="rounded-full border border-ink/15 px-3 py-1 text-xs font-medium text-ink/70 transition-colors hover:border-terracotta hover:text-terracotta"
           >
             Today
           </button>
         </div>
-        <button onClick={() => navigate(1)} className="rounded-lg p-2 hover:bg-gray-100">
-          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
+        <button
+          onClick={() => navigate(1)}
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition-colors hover:bg-cream hover:text-ink"
+          aria-label="Next"
+        >
+          →
         </button>
       </div>
 
       {/* Calendar */}
       {loading ? (
-        <div className="mt-6 space-y-3">
+        <div className="mt-8 space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-xl bg-gray-100 animate-pulse" />
+            <div key={i} className="h-28 animate-pulse rounded-3xl bg-ink/5" />
           ))}
         </div>
       ) : (
-        <div className="mt-4 space-y-4">
+        <div className="mt-8 space-y-5">
           {weekDays.map((date) => {
             const dayBookings = getBookingsForDate(date);
             return (
-              <div key={date.toISOString()} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+              <div
+                key={date.toISOString()}
+                className="overflow-hidden rounded-3xl border border-ink/10 bg-white"
+              >
                 <div
-                  className={`px-4 py-2 border-b text-sm font-medium ${
-                    isToday(date) ? "bg-teal-50 text-teal-700 border-teal-200" : "bg-gray-50 text-gray-700 border-gray-200"
+                  className={`flex items-center justify-between px-5 py-3 ${
+                    isToday(date)
+                      ? "bg-terracotta text-cream"
+                      : "bg-cream text-ink"
                   }`}
                 >
-                  {formatDate(date)}
-                  {isToday(date) && <span className="ml-2 text-xs font-normal">Today</span>}
+                  <span className="font-display text-base font-semibold">
+                    {formatDate(date)}
+                  </span>
+                  {isToday(date) && (
+                    <span className="text-[10px] font-medium uppercase tracking-widest">
+                      Today
+                    </span>
+                  )}
                 </div>
                 {dayBookings.length === 0 ? (
-                  <div className="px-4 py-3 text-sm text-gray-400">No bookings</div>
+                  <div className="px-5 py-5 text-sm text-ink/40">Nothing scheduled.</div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-ink/10">
                     {dayBookings.map((booking) => (
                       <button
                         key={booking.id}
                         onClick={() => setSelectedBooking(booking)}
-                        className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                        className={`w-full px-5 py-4 text-left transition-colors hover:bg-cream ${
                           booking.status === "cancelled" ? "opacity-50" : ""
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="text-sm font-medium text-gray-900">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="font-display text-base font-semibold text-ink">
                               {formatTime(booking.startTime)} — {formatTime(booking.endTime)}
-                            </span>
-                            <span className="ml-2 text-sm text-gray-600">
+                            </div>
+                            <div className="mt-0.5 truncate text-sm text-ink/65">
                               {booking.customerName}
-                            </span>
+                              {booking.serviceName && (
+                                <span className="text-ink/40"> · {booking.serviceName}</span>
+                              )}
+                            </div>
                           </div>
                           <span
-                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                              STATUS_COLORS[booking.status] || "bg-gray-100 text-gray-600"
-                            }`}
+                            className={`flex-shrink-0 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${statusPill(
+                              booking.status
+                            )}`}
                           >
                             {booking.status}
                           </span>
                         </div>
-                        {booking.serviceName && (
-                          <div className="mt-1 text-xs text-gray-500">{booking.serviceName}</div>
-                        )}
                       </button>
                     ))}
                   </div>
@@ -235,74 +266,77 @@ export default function CalendarPage() {
 
       {/* Booking detail modal */}
       {selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Booking Details</h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedBooking(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl bg-cream p-7"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+                  Booking
+                </p>
+                <h2 className="mt-1 font-display text-2xl font-bold text-ink">
+                  {selectedBooking.customerName}
+                </h2>
+              </div>
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-ink/40 transition-colors hover:bg-ink hover:text-cream"
+                aria-label="Close"
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                ✕
               </button>
             </div>
 
-            <div className="mt-4 space-y-3 text-sm">
-              <div>
-                <span className="text-gray-500">Customer: </span>
-                <span className="font-medium text-gray-900">{selectedBooking.customerName}</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Email: </span>
-                <span className="text-gray-900">{selectedBooking.customerEmail}</span>
-              </div>
+            <dl className="mt-6 space-y-3 border-t border-ink/10 pt-5 text-sm">
+              <Row label="Email" value={selectedBooking.customerEmail} />
               {selectedBooking.customerPhone && (
-                <div>
-                  <span className="text-gray-500">Phone: </span>
-                  <span className="text-gray-900">{selectedBooking.customerPhone}</span>
-                </div>
+                <Row label="Phone" value={selectedBooking.customerPhone} />
               )}
-              <div>
-                <span className="text-gray-500">Service: </span>
-                <span className="text-gray-900">{selectedBooking.serviceName || "N/A"}</span>
+              <Row label="Service" value={selectedBooking.serviceName || "—"} />
+              <Row
+                label="Time"
+                value={`${formatTime(selectedBooking.startTime)} — ${formatTime(
+                  selectedBooking.endTime
+                )}`}
+              />
+              <div className="flex items-center justify-between">
+                <dt className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink/50">
+                  Status
+                </dt>
+                <dd>
+                  <span
+                    className={`rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${statusPill(
+                      selectedBooking.status
+                    )}`}
+                  >
+                    {selectedBooking.status}
+                  </span>
+                </dd>
               </div>
-              <div>
-                <span className="text-gray-500">Time: </span>
-                <span className="text-gray-900">
-                  {formatTime(selectedBooking.startTime)} — {formatTime(selectedBooking.endTime)}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Status: </span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    STATUS_COLORS[selectedBooking.status] || "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {selectedBooking.status}
-                </span>
-              </div>
-            </div>
+            </dl>
 
             {selectedBooking.status === "confirmed" && (
-              <div className="mt-6 flex gap-2">
+              <div className="mt-7 flex flex-wrap gap-2">
                 <button
                   onClick={() => updateStatus(selectedBooking.id, "completed")}
-                  className="flex-1 rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+                  className="flex-1 rounded-full bg-teal-700 px-4 py-3 text-sm font-medium text-cream transition-colors hover:bg-teal-800"
                 >
-                  Completed
+                  Complete
                 </button>
                 <button
                   onClick={() => updateStatus(selectedBooking.id, "no_show")}
-                  className="flex-1 rounded-lg bg-yellow-500 px-3 py-2 text-sm font-medium text-white hover:bg-yellow-600 transition-colors"
+                  className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-3 text-sm font-medium text-ink transition-colors hover:border-terracotta hover:text-terracotta"
                 >
-                  No Show
+                  No show
                 </button>
                 <button
                   onClick={() => updateStatus(selectedBooking.id, "cancelled")}
-                  className="flex-1 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+                  className="flex-1 rounded-full bg-ink px-4 py-3 text-sm font-medium text-cream transition-colors hover:bg-ink/90"
                 >
                   Cancel
                 </button>
@@ -311,6 +345,17 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <dt className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink/50">
+        {label}
+      </dt>
+      <dd className="text-right text-sm text-ink">{value}</dd>
     </div>
   );
 }

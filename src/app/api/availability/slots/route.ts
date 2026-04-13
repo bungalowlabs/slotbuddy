@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { businesses, services, availability, bookings, blockedTimes } from "@/db/schema";
-import { eq, and, gte, lte } from "drizzle-orm";
+import { eq, and, gte, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { isBusinessBookable } from "@/lib/business-access";
 
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
         and(
           eq(availability.businessId, business.id),
           eq(availability.dayOfWeek, dayOfWeek),
-          eq(availability.isEnabled, true)
+          sql`${availability.isEnabled} IS TRUE`
         )
       )
       .limit(1);

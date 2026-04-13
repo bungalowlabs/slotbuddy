@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FeedbackWidget } from "@/components/feedback-widget";
 
 export default function SuccessPage({
   searchParams,
@@ -16,51 +17,59 @@ export default function SuccessPage({
     : "";
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-          <svg
-            className="h-8 w-8 text-green-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
-        </div>
-
-        <h1 className="mt-6 text-2xl font-bold text-gray-900">
-          {isPending ? "Request received!" : "Booking confirmed!"}
+    <div className="min-h-screen bg-cream text-ink">
+      <div className="mx-auto max-w-lg px-5 pb-16 pt-20">
+        <p className="mb-5 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-terracotta">
+          <span className="h-px w-8 bg-terracotta" />
+          {isPending ? "Request received" : "You're all set"}
+        </p>
+        <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl">
+          {isPending ? (
+            <>
+              Sitting in the{" "}
+              <em className="italic text-terracotta">queue</em>.
+            </>
+          ) : (
+            <>
+              See you <em className="italic text-terracotta">then</em>.
+            </>
+          )}
         </h1>
-        <p className="mt-2 text-gray-600">
+
+        <p className="mt-6 text-lg leading-relaxed text-ink/70">
           {isPending
-            ? "Your booking request is pending approval. You'll get an email once it's confirmed."
-            : "You're all set. A confirmation email is on its way."}
+            ? "Your booking request is waiting for approval. We'll email you the moment it's confirmed."
+            : "A confirmation email is on its way. Add it to your calendar while you're at it."}
         </p>
 
         {(formattedDate || searchParams.time) && (
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-4 inline-block">
+          <div className="mt-10 border-l-2 border-terracotta pl-5">
             {formattedDate && (
-              <div className="text-sm font-medium text-gray-900">{formattedDate}</div>
+              <p className="font-display text-xl font-semibold text-ink">
+                {formattedDate}
+              </p>
             )}
             {searchParams.time && (
-              <div className="text-sm text-gray-600">{searchParams.time}</div>
+              <p className="mt-1 text-lg text-ink/70">{searchParams.time}</p>
             )}
           </div>
         )}
 
-        <p className="mt-6 text-sm text-gray-500">
+        <p className="mt-10 text-sm text-ink/55">
           Need to cancel? Check your confirmation email for a cancellation link.
         </p>
 
-        <footer className="mt-16 text-center text-xs text-gray-400">
+        <footer className="mt-20 border-t border-ink/10 pt-6 text-xs text-ink/50">
           Powered by{" "}
-          <Link href="/" className="text-teal-500 hover:text-teal-600">
+          <Link
+            href="/"
+            className="font-display font-semibold text-ink hover:text-terracotta"
+          >
             Hello! SlotBuddy
           </Link>
         </footer>
       </div>
+      <FeedbackWidget source="booking" />
     </div>
   );
 }
